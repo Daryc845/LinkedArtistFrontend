@@ -1,0 +1,83 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <span class="logo-text">Petro Urrego</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/project/dashboard" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+        <span class="nav-text">Proyectos</span>
+      </a>
+      <a routerLink="/profile/dashboard" class="nav-item">
+        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
+        <span class="nav-text">Perfil</span>
+      </a>
+      <a routerLink="/profile/notifications" class="nav-item active">
+        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
+        <span class="nav-text">Notificaciones</span>
+      </a>
+      <a routerLink="/artists" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
+        <span class="nav-text">Artistas</span>
+      </a>
+    </nav>
+
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+        <span class="nav-text">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <div class="notifications-container">
+      <div class="notifications-header">
+        <h1>Notificaciones</h1>
+        <button class="btn-mark-all" (click)="markAllAsRead()" *ngIf="hasUnreadNotifications()">
+          Marcar todas como leídas
+        </button>
+      </div>
+
+      <!-- Lista de notificaciones -->
+      <div class="notifications-list">
+        <div 
+          class="notification-card" 
+          *ngFor="let notification of notifications"
+          [class.unread]="!notification.read"
+          (click)="markAsRead(notification)"
+        >
+          <div class="notification-icon" [ngClass]="notification.type">
+            <i [class]="getIconClass(notification.type)"></i>
+          </div>
+          
+          <div class="notification-content">
+            <h3 class="notification-title">{{notification.title}}</h3>
+            <p class="notification-description">{{notification.description}}</p>
+            <span class="notification-time">{{notification.time}}</span>
+          </div>
+
+          <div class="notification-status" *ngIf="!notification.read">
+            <span class="unread-badge"></span>
+          </div>
+
+          <button class="notification-delete-btn" (click)="validateDelete(notification, $event)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+        </div>
+
+        <!-- Mensaje cuando no hay notificaciones -->
+        <div class="empty-state" *ngIf="notifications.length === 0">
+          <i class="fa-regular fa-bell-slash empty-icon"></i>
+          <h3>No tienes notificaciones</h3>
+          <p>Cuando recibas notificaciones, aparecerán aquí</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

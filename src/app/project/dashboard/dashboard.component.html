@@ -1,0 +1,198 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <span class="logo-text">Petro Urrego</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/project/dashboard" class="nav-item active">
+        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+        <span class="nav-text">Proyectos</span>
+      </a>
+      <a routerLink="/profile/dashboard" class="nav-item">
+        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
+        <span class="nav-text">Perfil</span>
+      </a>
+      <a routerLink="/profile/notifications" class="nav-item">
+        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
+        <span class="nav-text">Notificaciones</span>
+      </a>
+      <a routerLink="/artists" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
+        <span class="nav-text">Artistas</span>
+      </a>
+    </nav>
+
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+        <span class="nav-text">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <!-- Barra superior -->
+    <div class="top-bar">
+      <button class="btn-new" [routerLink]="['../create']">
+        <span>+</span> Nuevo
+      </button>
+
+      <div class="search-filters">
+        <div class="search-bar">
+          <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input 
+            type="text" 
+            placeholder="Buscar proyectos..." 
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+          >
+        </div>
+
+        <div class="filter-group">
+          <div class="dropdown">
+            <button class="dropdown-btn" (click)="toggleSkillsDropdown()">
+              Habilidades
+              <span class="arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" *ngIf="showSkillsDropdown">
+              <label class="dropdown-item" *ngFor="let skill of availableSkills">
+                <input type="checkbox" [(ngModel)]="skill.selected">
+                <span>{{skill.name}}</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="dropdown-btn" (click)="toggleCategoryDropdown()">
+              Categoría
+              <span class="arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" *ngIf="showCategoryDropdown">
+              <label class="dropdown-item" *ngFor="let category of categories">
+                <input type="radio" name="category" [(ngModel)]="selectedCategory" [value]="category">
+                <span>{{category}}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="toggle-buttons">
+          <button 
+            class="toggle-btn" 
+            [class.active]="viewMode === 'public'" 
+            (click)="viewMode = 'public'">
+            <i class="fa-solid fa-users"></i>
+          </button>
+
+          <button 
+            class="toggle-btn" 
+            [class.active]="viewMode === 'subscribed'" 
+            (click)="viewMode = 'subscribed'">
+            <i class="fa-solid fa-hand-fist"></i>
+          </button>
+
+          <button 
+            class="toggle-btn" 
+            [class.active]="viewMode === 'me'" 
+            (click)="viewMode = 'me'">
+            <i class="fa-solid fa-person"></i>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de proyectos -->
+    <div class="projects-container">
+      <div class="projects-grid">
+        <div 
+          class="project-card" 
+          *ngFor="let project of filteredProjects"
+          (click)="openProjectDetail(project)"
+        >
+          <div class="project-category">{{project.category}}</div>
+          <h3 class="project-title">{{project.title}}</h3>
+          <p class="project-description">{{project.description}}</p>
+          <div class="project-skills">
+            <span class="skill-tag" *ngFor="let skill of project.skills">{{skill}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de detalle del proyecto -->
+  <div class="modal-overlay" *ngIf="selectedProject" (click)="closeProjectDetail()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{selectedProject.title}}</h2>
+        <!-- Mostrar si estoy viendo proyectos de otros -->
+        <button 
+          class="btn-primary" 
+          *ngIf="viewMode === 'public'" 
+          (click)="requestJoin()">
+          <i class="fa-solid fa-paper-plane icon"></i>Solicitar unirse
+        </button>
+
+        <!-- Mostrar si estoy viendo MIS proyectos -->
+        <button 
+          class="btn-secondary" 
+          *ngIf="viewMode === 'me'" 
+          (click)="manageProject(selectedProject.id)">
+          <i class="fa-solid fa-pen icon"></i>Gestionar
+        </button>
+
+        <button 
+          class="btn-secondary" 
+          *ngIf="viewMode === 'subscribed'" 
+          (click)="workProject(selectedProject.id)">
+          <i class="fa-solid fa-person-walking-arrow-right icon"></i>Ingresar
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="project-info">
+          <h3>Descripción</h3>
+          <p>{{selectedProject.description}}</p>
+        </div>
+
+        <div class="tasks-section">
+          <h3>Tareas</h3>
+          
+          <div class="tasks-board">
+            <div class="task-column">
+              <h4 class="column-title todo">Por hacer</h4>
+              <div class="task-item" *ngFor="let task of selectedProject.tasks?.todo">
+                {{task}}
+              </div>
+            </div>
+
+            <div class="task-column">
+              <h4 class="column-title in-progress">En progreso</h4>
+              <div class="task-item" *ngFor="let task of selectedProject.tasks?.inProgress">
+                {{task}}
+              </div>
+            </div>
+
+            <div class="task-column">
+              <h4 class="column-title review">En revisión</h4>
+              <div class="task-item" *ngFor="let task of selectedProject.tasks?.review">
+                {{task}}
+              </div>
+            </div>
+
+            <div class="task-column">
+              <h4 class="column-title done">Hecho</h4>
+              <div class="task-item" *ngFor="let task of selectedProject.tasks?.done">
+                {{task}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

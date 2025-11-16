@@ -1,0 +1,413 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <span class="logo-text">Petro Urrego</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/project/dashboard" class="nav-item active">
+        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+        <span class="nav-text">Proyectos</span>
+      </a>
+      <a routerLink="/profile/dashboard" class="nav-item">
+        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
+        <span class="nav-text">Perfil</span>
+      </a>
+      <a routerLink="/profile/notifications" class="nav-item">
+        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
+        <span class="nav-text">Notificaciones</span>
+      </a>
+      <a routerLink="/artists" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
+        <span class="nav-text">Artistas</span>
+      </a>
+    </nav>
+
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+        <span class="nav-text">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <div class="manage-container">
+      <!-- Panel de Tareas -->
+      <div class="tasks-panel">
+        <div class="tasks-header">
+          <h2>Tablero de tareas</h2>
+          <button class="btn-add-task" (click)="showAddTaskModal()">
+            <i class="fa-solid fa-plus"></i> Añadir tarea
+          </button>
+        </div>
+
+        <div class="tasks-board">
+          <div class="task-column">
+            <h3 class="column-title todo">Por hacer</h3>
+            <div 
+              class="task-list"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'todo')"
+            >
+              <div 
+                class="task-card"
+                *ngFor="let task of project.tasks.todo"
+                draggable="true"
+                (dragstart)="onDragStart($event, task, 'todo')"
+                (click)="openEditTaskModal(task, 'todo')"
+                [class.selected]="editingTask?.id === task.id"
+              >
+                <div class="task-name">{{task.name}}</div>
+                <div class="task-assignee" *ngIf="task.assignee">
+                  <i class="fa-solid fa-user"></i> {{task.assignee}}
+                </div>
+                <div class="task-warning" *ngIf="!task.assignee">
+                  <i class="fa-solid fa-exclamation-triangle"></i> Sin encargado
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h3 class="column-title in-progress">En progreso</h3>
+            <div 
+              class="task-list"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'inProgress')"
+            >
+              <div 
+                class="task-card"
+                *ngFor="let task of project.tasks.inProgress"
+                [attr.draggable]="true"
+                (dragstart)="onDragStart($event, task, 'inProgress')"
+                (click)="openEditTaskModal(task, 'inProgress')"
+                [class.selected]="editingTask?.id === task.id"
+              >
+                <div class="task-content">
+                  <div class="task-name">{{task.name}}</div>
+                  <div class="task-assignee" *ngIf="task.assignee">
+                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h3 class="column-title review">En revisión</h3>
+            <div 
+              class="task-list"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'review')"
+            >
+              <div 
+                class="task-card"
+                *ngFor="let task of project.tasks.review"
+                [attr.draggable]="true"
+                (dragstart)="onDragStart($event, task, 'review')"
+                (click)="openEditTaskModal(task, 'review')"
+                [class.selected]="editingTask?.id === task.id"
+              >
+                <div class="task-content">
+                  <div class="task-name">{{task.name}}</div>
+                  <div class="task-assignee" *ngIf="task.assignee">
+                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h3 class="column-title done">Hecho</h3>
+            <div 
+              class="task-list"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'done')"
+            >
+              <div 
+                class="task-card"
+                *ngFor="let task of project.tasks.done"
+                [attr.draggable]="true"
+                (dragstart)="onDragStart($event, task, 'done')"
+                (click)="openEditTaskModal(task, 'done')"
+                [class.selected]="editingTask?.id === task.id"
+              >
+                <div class="task-content">
+                  <div class="task-name">{{task.name}}</div>
+                  <div class="task-assignee" *ngIf="task.assignee">
+                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Configuración -->
+      <div class="config-panel">
+        <form (ngSubmit)="validateUpdate()">
+          <div class="config-section">
+            <h2>Configuración del proyecto</h2>
+
+            <div class="form-group">
+              <label for="title">Nombre del proyecto</label>
+              <input 
+                type="text" 
+                id="title"
+                name="title"
+                [(ngModel)]="project.title"
+                placeholder="Nombre del proyecto"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="description">Descripción</label>
+              <textarea 
+                id="description"
+                name="description"
+                [(ngModel)]="project.description"
+                placeholder="Descripción del proyecto"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Habilidades necesarias</label>
+              <div class="skills-selector">
+                <div class="dropdown">
+                  <button 
+                    type="button"
+                    class="dropdown-btn" 
+                    (click)="toggleSkillsDropdown()"
+                  >
+                    Seleccionar habilidades
+                    <span class="arrow">▼</span>
+                  </button>
+                  <div class="dropdown-menu" *ngIf="showSkillsDropdown">
+                    <label 
+                      class="dropdown-item" 
+                      *ngFor="let skill of availableSkills"
+                      (click)="$event.stopPropagation()"
+                    >
+                      <input 
+                        type="checkbox" 
+                        [checked]="isSkillSelected(skill.name)"
+                        (change)="toggleSkill(skill.name)"
+                      >
+                      <span>{{skill.name}}</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="selected-skills" *ngIf="project.skills.length > 0">
+                  <span 
+                    class="skill-chip" 
+                    *ngFor="let skill of project.skills"
+                  >
+                    {{skill}}
+                    <button 
+                      type="button"
+                      class="remove-skill"
+                      (click)="removeSkill(skill)"
+                    >×</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="category">Categoría</label>
+              <select 
+                id="category"
+                name="category"
+                [(ngModel)]="project.category"
+                required
+              >
+                <option value="">Selecciona una categoría</option>
+                <option *ngFor="let category of categories" [value]="category">
+                  {{category}}
+                </option>
+              </select>
+            </div>
+
+            <button 
+              type="button"
+              class="btn-view-members" 
+              (click)="showMembersModal()"
+            >
+              <i class="fa-solid fa-users"></i> Ver integrantes
+            </button>
+
+            <button 
+              type="button"
+              class="btn-view-members" 
+              (click)="showRequestModal()"
+            >
+              <i class="fa-solid fa-paper-plane"></i> Abrir centro de solicitudes
+            </button>
+
+            <button type="submit" class="btn-save">
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal para añadir/editar tarea -->
+  <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()">
+    <div class="modal-content small" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{editingTask ? 'Editar tarea' : 'Añadir nueva tarea'}}</h3>
+        <button class="close-btn" (click)="closeTaskModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="editingTask ? validateUpdateTask() : validateAddTask()">
+        <div class="form-group">
+          <label for="taskName">Nombre de la tarea</label>
+          <input 
+            type="text" 
+            id="taskName"
+            name="taskName"
+            [(ngModel)]="taskForm.name"
+            placeholder="Ej: Diseñar logo principal"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="taskAssignee">Correo del encargado (opcional)</label>
+          <input 
+            type="email" 
+            id="taskAssignee"
+            name="taskAssignee"
+            [(ngModel)]="taskForm.assignee"
+            placeholder="correo@ejemplo.com"
+          >
+        </div>
+
+        <div class="modal-actions">
+          <button 
+            type="button" 
+            class="btn-delete" 
+            (click)="confirmDeleteTask()"
+            *ngIf="editingTask"
+          >
+            <i class="fa-solid fa-trash"></i> Eliminar
+          </button>
+          <div class="action-buttons">
+            <button type="button" class="btn-cancel" (click)="closeTaskModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit">
+              {{editingTask ? 'Guardar cambios' : 'Añadir tarea'}}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para ver integrantes -->
+  <div class="modal-overlay" *ngIf="showMembersListModal" (click)="closeMembersModal()">
+    <div class="modal-content medium" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Integrantes del proyecto</h3>
+        <button class="close-btn" (click)="closeMembersModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="members-list">
+        <div class="member-card" *ngFor="let member of project.members">
+          <div class="member-info">
+            <div class="member-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="member-details">
+              <div class="member-name">
+                {{member.name}}
+                <span class="member-alias" *ngIf="member.alias">({{member.alias}})</span>
+              </div>
+              <div class="member-email">{{member.email}}</div>
+            </div>
+          </div>
+          <button 
+            class="btn-remove-member" 
+            (click)="removeMember(member)"
+            *ngIf="!member.isOwner"
+          >
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          <span class="owner-badge" *ngIf="member.isOwner">
+            <i class="fa-solid fa-crown"></i> Propietario
+          </span>
+        </div>
+
+        <div class="empty-members" *ngIf="project.members.length === 0">
+          <i class="fa-solid fa-users-slash"></i>
+          <p>No hay integrantes en este proyecto</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Centro de Solicitudes -->
+  <div class="modal-overlay" *ngIf="showRequestsListModal" (click)="closeRequestModal()">
+    <div class="modal-content medium" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <h3>Centro de Solicitudes</h3>
+        <button class="close-btn" (click)="closeRequestModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="requests-list">
+
+        <div class="request-card" *ngFor="let req of project.requests">
+          
+          <div class="request-info">
+
+            <div class="request-details">
+              <div class="request-name">
+                {{req.name}}
+                <span class="request-alias" *ngIf="req.alias">({{req.alias}})</span>
+              </div>
+
+              <div class="request-email">{{req.email}}</div>
+            </div>
+          </div>
+
+          <div class="request-actions">
+            <button class="btn-accept" (click)="acceptRequest(req)">
+              <i class="fa-solid fa-check"></i> Aceptar
+            </button>
+
+            <button class="btn-reject" (click)="rejectRequest(req)">
+              <i class="fa-solid fa-xmark"></i> Rechazar
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-requests" *ngIf="project.requests.length === 0">
+          <i class="fa-solid fa-folder-open"></i>
+          <p>No hay solicitudes pendientes</p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

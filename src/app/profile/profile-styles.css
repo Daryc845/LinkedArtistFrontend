@@ -1,0 +1,252 @@
+/* Variables de colores */
+:root {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-card: #2a2a2a;
+  --bg-input: #333333;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --blue-primary: #3b82f6;
+  --blue-hover: #2563eb;
+  --blue-light: #60a5fa;
+  --orange-primary: #f97316;
+  --orange-hover: #ea580c;
+  --orange-light: #fb923c;
+  --red-primary: #f91616;
+  --red-hover: #ea0c0c;
+  --red-light: #fb3c3c;
+  --border-color: #404040;
+  --sidebar-width: 260px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.error-snackbar {
+  background-color: #e53935;
+  color: white;
+  font-weight: bold;
+  border-radius: 1em;
+}
+
+.error-snackbar .mdc-snackbar__action:hover{
+  color: #9b2725 !important;
+  border-radius: 2em;
+}
+
+.error-snackbar .mdc-snackbar__action:hover .mdc-button__label {
+  color: #ffffff;
+}
+
+.success-snackbar {
+  background-color: #13dd01;
+  color: white;
+  font-weight: bold;
+  border-radius: 1em;
+}
+
+.success-snackbar .mdc-snackbar__action:hover{
+  color: #009900 !important;
+  border-radius: 2em;
+}
+
+.success-snackbar .mdc-snackbar__action:hover .mdc-button__label {
+  color: #ffffff;
+}
+
+.warning-snackbar {
+  background-color: #e58a35;
+  color: white;
+  font-weight: bold;
+  border-radius: 1em;
+}
+
+.warning-snackbar .mdc-snackbar__action:hover{
+  color: #9b5a25 !important;
+  border-radius: 2em;
+}
+
+.warning-snackbar .mdc-snackbar__action:hover .mdc-button__label {
+  color: #ffffff;
+}
+
+/* Layout principal */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar de navegación */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-light));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Navegación */
+.nav-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-light));
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.nav-icon {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Botón de logout */
+.logout-section {
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: var(--orange-primary);
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.logout-btn:hover {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--orange-light);
+}
+
+/* Contenido principal */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #505050;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 70px;
+  }
+
+  .sidebar {
+    padding: 24px 8px;
+  }
+
+  .sidebar-logo {
+    justify-content: center;
+  }
+
+  .logo-text,
+  .nav-text {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .nav-icon {
+    font-size: 20px;
+  }
+}
