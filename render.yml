@@ -2,7 +2,7 @@ services:
   - type: web
     name: LinkedArtistFrontend
     env: static
-    buildCommand: npm install && ng build --configuration production
+    buildCommand: npm install && npx ng build --configuration production
     staticPublishPath: dist/LinkedArtistFrontend
     routes:
       - type: rewrite
