@@ -3,11 +3,11 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-interface Task {
-  id: number;
-  name: string;
-}
+import { ProjectService } from '../../services/create-project.service';
+import { CreateProjectRequest } from '../../models/requests/create-project.requests';
+import { CreateProjectResponse } from '../../models/responses/create-project.responses';
+import { Project } from '../../models/project.model';
+import { Task } from '../../models/task.model';
 
 @Component({
   standalone: true,
@@ -24,7 +24,7 @@ export class CreateProjectComponent {
   editingTaskId: number | null = null;
   taskIdCounter: number = 1;
 
-  project = {
+  project: Project = {
     title: '',
     description: '',
     category: '',
@@ -44,7 +44,12 @@ export class CreateProjectComponent {
     'Concept Art'
   ];
 
-  constructor(private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) {}
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private snackBar: MatSnackBar,
+    private projectService: ProjectService
+  ) {}
 
   toggleSkillsDropdown(): void {
     this.showSkillsDropdown = !this.showSkillsDropdown;
@@ -92,8 +97,7 @@ export class CreateProjectComponent {
     this.project.tasks.splice(index, 1);
   }
 
-  onSubmit(): boolean {
-    
+  private validateForm(): boolean {
     if (!this.project.title.trim()) {
       this.snackBar.open('Por favor ingresa un título para el proyecto', 'Cerrar', {
         duration: 3000,
@@ -127,23 +131,43 @@ export class CreateProjectComponent {
     }
 
     return true;
-    
   }
 
   validateCreate(): void {
-    if (this.onSubmit()){
-      this.snackBar.open('Creando proyecto: ' + this.project, 'Cerrar', {
-        duration: 3000,
-        panelClass: ['warning-snackbar']
-      });
+    if (this.validateForm()) {
+      // Preparar datos para el request según el endpoint
+      const createProjectRequest: CreateProjectRequest = {
+        title: this.project.title,
+        category: this.project.category,
+        userId: 'current-user-id', // Aquí deberías obtener el ID del usuario autenticado
+        skills: this.project.skills.map(skill => ({ name: skill })),
+        initialTasks: this.project.tasks.map(task => ({ name: task.name }))
+      };
 
-      // BACKEND CREATE PROJECT LOGIC HERE
-
-      this.snackBar.open('Proyecto creado exitosamente', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
+      // Llamar al servicio para crear el proyecto
+      this.projectService.createProject(createProjectRequest).subscribe({
+        next: (response: CreateProjectResponse) => {
+          if (response.success) {
+            this.snackBar.open('Proyecto creado exitosamente', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+            this.router.navigate(['../dashboard'], { relativeTo: this.route });
+          } else {
+            this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        },
+        error: (error) => {
+          this.snackBar.open('Error al crear el proyecto', 'Cerrar', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
+          console.error('Error creating project:', error);
+        }
       });
-      this.router.navigate(['../dashboard'], { relativeTo: this.route });
     }
   }
 

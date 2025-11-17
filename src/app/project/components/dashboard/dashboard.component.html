@@ -1,4 +1,3 @@
-
 <!-- Contenido principal -->
 <main class="main-content">
   <!-- Barra superior -->
@@ -26,7 +25,7 @@
           </button>
           <div class="dropdown-menu" *ngIf="showSkillsDropdown">
             <label class="dropdown-item" *ngFor="let skill of availableSkills">
-              <input type="checkbox" [(ngModel)]="skill.selected">
+              <input type="checkbox" [(ngModel)]="skill.selected" (change)="onSearch()">
               <span>{{skill.name}}</span>
             </label>
           </div>
@@ -39,7 +38,12 @@
           </button>
           <div class="dropdown-menu" *ngIf="showCategoryDropdown">
             <label class="dropdown-item" *ngFor="let category of categories">
-              <input type="radio" name="category" [(ngModel)]="selectedCategory" [value]="category">
+              <input 
+                type="radio" 
+                name="category" 
+                [(ngModel)]="selectedCategory" 
+                [value]="category"
+                (change)="onSearch()">
               <span>{{category}}</span>
             </label>
           </div>
@@ -49,24 +53,23 @@
         <button 
           class="toggle-btn" 
           [class.active]="viewMode === 'public'" 
-          (click)="viewMode = 'public'">
+          (click)="viewMode = 'public'; onSearch()">
           <i class="fa-solid fa-users"></i>
         </button>
 
         <button 
           class="toggle-btn" 
-          [class.active]="viewMode === 'subscribed'" 
-          (click)="viewMode = 'subscribed'">
-          <i class="fa-solid fa-hand-fist"></i>
+          [class.active]="viewMode === 'profile'" 
+          (click)="viewMode = 'profile'; onSearch()">
+          <i class="fa-solid fa-person"></i>
         </button>
 
         <button 
           class="toggle-btn" 
-          [class.active]="viewMode === 'me'" 
-          (click)="viewMode = 'me'">
-          <i class="fa-solid fa-person"></i>
+          [class.active]="viewMode === 'registered'" 
+          (click)="viewMode = 'registered'; onSearch()">
+          <i class="fa-solid fa-hand-fist"></i>
         </button>
-
       </div>
     </div>
   </div>
@@ -83,7 +86,7 @@
         <h3 class="project-title">{{project.title}}</h3>
         <p class="project-description">{{project.description}}</p>
         <div class="project-skills">
-          <span class="skill-tag" *ngFor="let skill of project.skills">{{skill}}</span>
+          <span class="skill-tag" *ngFor="let skill of project.skills">{{skill.name}}</span>
         </div>
       </div>
     </div>
@@ -106,15 +109,15 @@
       <!-- Mostrar si estoy viendo MIS proyectos -->
       <button 
         class="btn-secondary" 
-        *ngIf="viewMode === 'me'" 
-        (click)="manageProject(selectedProject.id)">
+        *ngIf="viewMode === 'profile'" 
+        (click)="manageProject(selectedProject.projectid)">
         <i class="fa-solid fa-pen icon"></i>Gestionar
       </button>
 
       <button 
         class="btn-secondary" 
-        *ngIf="viewMode === 'subscribed'" 
-        (click)="workProject(selectedProject.id)">
+        *ngIf="viewMode === 'registered'" 
+        (click)="workProject(selectedProject.projectid)">
         <i class="fa-solid fa-person-walking-arrow-right icon"></i>Ingresar
       </button>
     </div>
@@ -131,29 +134,29 @@
         <div class="tasks-board">
           <div class="task-column">
             <h4 class="column-title todo">Por hacer</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks?.todo">
-              {{task}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'to be done'">
+              {{task.name}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title in-progress">En progreso</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks?.inProgress">
-              {{task}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'in progress'">
+              {{task.name}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title review">En revisión</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks?.review">
-              {{task}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'under review'">
+              {{task.name}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title done">Hecho</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks?.done">
-              {{task}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'done'">
+              {{task.name}}
             </div>
           </div>
         </div>

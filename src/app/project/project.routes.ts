@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { CreateProjectComponent } from './create-project/create-project.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { ManageProjectComponent } from './manage-project/manage-project.component';
 import { WorkProjectComponent } from './work-project/work-project.component';
 
