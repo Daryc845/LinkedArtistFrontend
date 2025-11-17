@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: angular-app
+    name: LinkedArtistFrontend
     env: static
     buildCommand: npm install && ng build --configuration production
     staticPublishPath: dist/your-app-name
