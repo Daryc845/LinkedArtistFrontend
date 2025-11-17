@@ -36,7 +36,7 @@ interface Project {
   standalone: true,
   selector: 'app-work-project',
   templateUrl: './work-project.component.html',
-  styleUrls: ['../project-styles.css', './work-project.component.css'],
+  styleUrls: ['./work-project.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterModule],
 })
@@ -87,6 +87,10 @@ export class WorkProjectComponent implements OnInit {
     // Aquí cargarías el proyecto desde el backend usando el ID de la ruta
     const projectId = this.route.snapshot.params['id'];
     this.loadProject(projectId);
+  }
+
+  validateVisitProfile(artistId: number): void {
+    this.router.navigate([`/artist/${artistId}`]);
   }
 
   loadProject(id: string): void {

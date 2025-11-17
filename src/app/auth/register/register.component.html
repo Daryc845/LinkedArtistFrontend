@@ -8,13 +8,25 @@
 
     <form class="auth-form" (ngSubmit)="validateRegister()" #form="ngForm">
       <div class="form-group">
-        <label for="fullName">Nombre completo</label>
+        <label for="name">Primer nombre</label>
         <input 
-          [(ngModel)]="fullName"
+          [(ngModel)]="name"
           type="text" 
-          id="fullName" 
-          name="fullName" 
-          placeholder="Juan Pérez"
+          id="name" 
+          name="name" 
+          placeholder="Juan Ernesto"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Apellidos</label>
+        <input 
+          [(ngModel)]="lastName"
+          type="text" 
+          id="lastName" 
+          name="lastName" 
+          placeholder="Pérez Pinzón"
           required
         >
       </div>

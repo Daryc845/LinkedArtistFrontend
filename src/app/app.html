@@ -1,1 +1,40 @@
-<router-outlet></router-outlet>
+<div class="app-container">
+  
+  <aside class="sidebar" *ngIf="showSidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <span class="logo-text">Petro Urrego</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a [routerLink]="['/project']" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+        <span class="nav-text">Proyectos</span>
+      </a>
+      <a routerLink="/user/dashboard" class="nav-item active" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
+        <span class="nav-text">Perfil</span>
+      </a>
+      <a routerLink="/user/notifications" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
+        <span class="nav-text">Notificaciones</span>
+      </a>
+      <a [routerLink]="['/artist']" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
+        <span class="nav-text">Artistas</span>
+      </a>
+    </nav>
+
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+        <span class="nav-text">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="content-scroll">
+    <router-outlet></router-outlet>
+  </div>
+    </main>
+</div>

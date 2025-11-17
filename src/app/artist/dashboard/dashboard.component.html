@@ -1,0 +1,52 @@
+<!-- Contenido principal -->
+<main class="main-content">
+  <!-- Barra superior -->
+  <div class="top-bar">
+    <div class="search-filters">
+      <div class="search-bar">
+        <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input 
+          type="text" 
+          placeholder="Buscar artistas..." 
+          [(ngModel)]="searchQuery"
+        >
+      </div>
+
+      <div class="filter-group">
+        <div class="dropdown">
+          <button class="dropdown-btn" (click)="toggleSkillsDropdown()">
+            Habilidades
+            <span class="arrow">▼</span>
+          </button>
+          <div class="dropdown-menu" *ngIf="showSkillsDropdown">
+            <label class="dropdown-item" *ngFor="let skill of availableSkills">
+              <input type="checkbox" [(ngModel)]="skill.selected">
+              <span>{{skill.name}}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" (click)="searchArtists()">
+        <i class="fa-solid fa-magnifying-glass icon"></i>Buscar
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid de artistas -->
+  <div class="projects-container">
+    <div class="projects-grid">
+      <div 
+        class="project-card" 
+        *ngFor="let artist of filteredArtists"
+        (click)="viewArtistProfile(artist)"
+      >
+        <h3 class="project-title">{{artist.name}} {{artist.lastname}}</h3>
+        <div class="project-skills">
+          <span class="skill-tag" *ngFor="let skill of artist.skills">{{skill}}</span>
+        </div>
+        <p class="project-description">{{artist.bio}}</p>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,8 +1,9 @@
-import { Component, ViewEncapsulation  } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -13,7 +14,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   encapsulation: ViewEncapsulation.None,
   imports: [
     RouterModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ]
 })
 export class LoginComponent {
@@ -21,7 +23,12 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private router: Router, private snackBar: MatSnackBar) {}
+  payload = {
+    email: this.email,
+    password: this.password
+  };
+
+  constructor(private router: Router, private snackBar: MatSnackBar, private http: HttpClient) { }
 
   onSubmit(): boolean {
 
@@ -45,10 +52,29 @@ export class LoginComponent {
     // BACKEND LOGIN LOGIC HERE
 
     return true;
-    
+
   }
 
-  validateLogin(): void {
+  doPetition(): Promise<boolean> {
+
+    return new Promise((resolve) => {
+      this.http.post('http://localhost:8080/auth/login', this.payload)
+        .subscribe({
+          next: (response: any) => {
+            console.log('Registro exitoso:', response);
+            localStorage.setItem('access_token', response.data.access_token);
+            localStorage.setItem('refresh_token', response.data.refresh_token);
+            resolve(true);
+          },
+          error: (error) => {
+            console.error('Error en el registro:', error);
+            resolve(false);
+          }
+        });
+    });
+  }
+
+  async validateLogin(): Promise<void> {
 
     if (this.onSubmit()) {
       this.snackBar.open('Iniciando sesión...', 'Cerrar', {
@@ -56,14 +82,22 @@ export class LoginComponent {
         panelClass: ['warning-snackbar']
       });
 
-      //BACKEND LOGIN SUCCESS LOGIC HERE
+      const success = await this.doPetition();
 
-      this.snackBar.open('Ha iniciado sesión exitosamente', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
+      if (success) {
+        this.snackBar.open('Ha iniciado sesión exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
 
-      this.router.navigate(['../../project/dashboard']);
+        this.router.navigate(['../../project/dashboard']);
+      } else {
+        this.snackBar.open('Las credenciales de usuario no son validas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
+
     }
   }
 

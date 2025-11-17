@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { ProfileDashboardComponent } from './dashboard/dashboard.component';
+import { UserDashboardComponent } from './dashboard/dashboard.component';
 import { NotificationsComponent } from './notifications/notification.component';
 // Importa el AuthGuard si quieres proteger estas rutas
 // import { AuthGuard } from '../auth/guards/auth.guard';
 
-export const profileRoutes: Routes = [
+export const userRoutes: Routes = [
   {
     path: '',
     redirectTo: 'dashboard',
@@ -12,12 +12,14 @@ export const profileRoutes: Routes = [
   },
   {
     path: 'dashboard',
-    component: ProfileDashboardComponent,
+    component: UserDashboardComponent,
+    data: { hideSidebar: false } 
     // canActivate: [AuthGuard] // Descomenta para proteger la ruta
   },
   {
     path: 'notifications',
     component: NotificationsComponent,
+    data: { hideSidebar: false } 
     // canActivate: [AuthGuard] // Descomenta para proteger la ruta
   }
 ];

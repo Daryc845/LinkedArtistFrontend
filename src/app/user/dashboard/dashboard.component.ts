@@ -6,18 +6,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   standalone: true,
-  selector: 'app-profile-dashboard',
+  selector: 'app-user-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['../profile-styles.css', './dashboard.component.css'],
+  styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [FormsModule, CommonModule, RouterModule],
 })
-export class ProfileDashboardComponent implements OnInit {
+export class UserDashboardComponent implements OnInit {
 
   showSkillsDropdown: boolean = false;
 
-  profile = {
-    fullName: '',
+  
+
+  user = {
+    name: '',
+    lastName: '',
     alias: '',
     phone: '',
     email: '',
@@ -25,6 +28,17 @@ export class ProfileDashboardComponent implements OnInit {
     skills: [] as string[],
     bio: ''
   };
+
+  payload = {
+    name: this.user.name,
+    lastName: this.user.lastName,
+    nickname: this.user.alias,
+    phone: this.user.phone,
+    email: this.user.email,
+    password: this.user.password,
+    skills: this.user.skills,
+    biography: this.user.bio
+  }
 
   availableSkills: string[] = [
     'Ilustración',
@@ -42,13 +56,14 @@ export class ProfileDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Aquí cargarías los datos del usuario desde el backend
-    this.loadUserProfile();
+    this.loaduseruser();
   }
 
-  loadUserProfile(): void {
+  loaduseruser(): void {
     // Simulación de datos del usuario - reemplazar con llamada al backend
-    this.profile = {
-      fullName: 'Juan Pérez',
+    this.user = {
+      name: 'Juan Eernesto',
+      lastName: 'Pérez Hernandez',
       alias: 'DJ Shadow',
       phone: '+57 300 123 4567',
       email: 'juan@email.com',
@@ -63,29 +78,29 @@ export class ProfileDashboardComponent implements OnInit {
   }
 
   isSkillSelected(skill: string): boolean {
-    return this.profile.skills.includes(skill);
+    return this.user.skills.includes(skill);
   }
 
   toggleSkill(skill: string): void {
-    const index = this.profile.skills.indexOf(skill);
+    const index = this.user.skills.indexOf(skill);
     if (index > -1) {
-      this.profile.skills.splice(index, 1);
+      this.user.skills.splice(index, 1);
     } else {
-      this.profile.skills.push(skill);
+      this.user.skills.push(skill);
     }
   }
 
   removeSkill(skill: string): void {
-    const index = this.profile.skills.indexOf(skill);
+    const index = this.user.skills.indexOf(skill);
     if (index > -1) {
-      this.profile.skills.splice(index, 1);
+      this.user.skills.splice(index, 1);
     }
   }
 
   onSubmit(): boolean {
     
-    if (!this.profile.fullName.trim()) {
-      this.snackBar.open('Por favor ingresa tu nombre completo', 'Cerrar', {
+    if (!this.user.name.trim() || !this.user.lastName.trim()) {
+      this.snackBar.open('Por favor tus nombres y apellidos', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
       });
@@ -93,7 +108,7 @@ export class ProfileDashboardComponent implements OnInit {
     }
 
     
-    if (!this.profile.phone.trim()) {
+    if (!this.user.phone.trim()) {
       this.snackBar.open('Por favor ingresa tu número de teléfono', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
@@ -102,7 +117,7 @@ export class ProfileDashboardComponent implements OnInit {
     }
 
     
-    if (!this.profile.email.trim()) {
+    if (!this.user.email.trim()) {
       this.snackBar.open('Por favor ingresa tu correo electrónico', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
@@ -112,7 +127,7 @@ export class ProfileDashboardComponent implements OnInit {
 
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.profile.email)) {
+    if (!emailRegex.test(this.user.email)) {
       this.snackBar.open('Por favor ingresa un email válido', 'Cerrar', {
         duration: 3000,
         panelClass: ['error-snackbar']
@@ -121,7 +136,7 @@ export class ProfileDashboardComponent implements OnInit {
     }
 
     
-    if (this.profile.password && this.profile.password.length < 6) {
+    if (this.user.password && this.user.password.length < 6) {
       this.snackBar.open('La contraseña debe tener al menos 6 caracteres', 'Cerrar', {
         duration: 3000,
         panelClass: ['error-snackbar']
@@ -130,7 +145,7 @@ export class ProfileDashboardComponent implements OnInit {
     }
 
     
-    if (this.profile.skills.length === 0) {
+    if (this.user.skills.length === 0) {
       this.snackBar.open('Por favor selecciona al menos una habilidad', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
@@ -147,9 +162,9 @@ export class ProfileDashboardComponent implements OnInit {
         duration: 3000,
         panelClass: ['warning-snackbar']
       });
-      // BACKEND UPDATE PROFILE LOGIC HERE
+      // BACKEND UPDATE user LOGIC HERE
       // Ejemplo:
-      // this.profileService.updateProfile(this.profile).subscribe({
+      // this.userService.updateuser(this.user).subscribe({
       //   next: (response) => {
       //     this.snackBar.open('Perfil actualizado exitosamente', 'Cerrar', {
       //       duration: 3000,
@@ -171,7 +186,7 @@ export class ProfileDashboardComponent implements OnInit {
       });
 
       // Limpiar contraseña después de guardar
-      this.profile.password = '';
+      this.user.password = '';
     }
   }
 
@@ -190,7 +205,7 @@ export class ProfileDashboardComponent implements OnInit {
     }
 
     // Aquí va el backend real
-    // this.userService.deleteAccount(this.profile.id).subscribe({
+    // this.userService.deleteAccount(this.user.id).subscribe({
     //   next: () => {
     //     ...
     //   },

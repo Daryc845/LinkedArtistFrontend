@@ -22,7 +22,7 @@ interface Project {
     standalone: true,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['../project-styles.css', './dashboard.component.css'],
+  styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [FormsModule, CommonModule, RouterModule],
 })

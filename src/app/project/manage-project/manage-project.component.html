@@ -1,46 +1,10 @@
-<div class="app-container">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
-      <span class="logo-text">Petro Urrego</span>
-    </div>
 
-    <nav class="nav-menu">
-      <a routerLink="/project/dashboard" class="nav-item active">
-        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
-        <span class="nav-text">Proyectos</span>
-      </a>
-      <a routerLink="/profile/dashboard" class="nav-item">
-        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
-        <span class="nav-text">Perfil</span>
-      </a>
-      <a routerLink="/profile/notifications" class="nav-item">
-        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
-        <span class="nav-text">Notificaciones</span>
-      </a>
-      <a routerLink="/artists" class="nav-item">
-        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
-        <span class="nav-text">Artistas</span>
-      </a>
-    </nav>
-
-    <div class="logout-section">
-      <button class="logout-btn" (click)="logout()">
-        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-        <span class="nav-text">Cerrar sesión</span>
-      </button>
-    </div>
-  </aside>
-
-  <!-- Contenido principal -->
-  <main class="main-content">
     <div class="manage-container">
       <!-- Panel de Tareas -->
       <div class="tasks-panel">
         <div class="tasks-header">
           <h2>Tablero de tareas</h2>
-          <button class="btn-add-task" (click)="showAddTaskModal()">
+          <button class="btn-primary" (click)="showAddTaskModal()">
             <i class="fa-solid fa-plus"></i> Añadir tarea
           </button>
         </div>
@@ -254,14 +218,20 @@
               <i class="fa-solid fa-paper-plane"></i> Abrir centro de solicitudes
             </button>
 
-            <button type="submit" class="btn-save">
+            <button type="submit" class="btn-secondary-plus">
               Guardar cambios
             </button>
+
+            
           </div>
         </form>
+        <div class="config-section">
+        <button (click)="validateDelete()" class="btn-tertiary">
+              <i class="fa-solid fa-triangle-exclamation icon"></i>Eliminar proyecto
+            </button>
+        </div>
       </div>
     </div>
-  </main>
 
   <!-- Modal para añadir/editar tarea -->
   <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()">
@@ -310,7 +280,7 @@
             <button type="button" class="btn-cancel" (click)="closeTaskModal()">
               Cancelar
             </button>
-            <button type="submit" class="btn-submit">
+            <button type="submit" class="btn-submit btn-primary">
               {{editingTask ? 'Guardar cambios' : 'Añadir tarea'}}
             </button>
           </div>
@@ -330,7 +300,7 @@
       </div>
 
       <div class="members-list">
-        <div class="member-card" *ngFor="let member of project.members">
+        <div class="member-card" *ngFor="let member of project.members" (click)="validateVisitProfile(member.id)">
           <div class="member-info">
             <div class="member-avatar">
               <i class="fa-solid fa-user"></i>
@@ -375,7 +345,7 @@
 
       <div class="requests-list">
 
-        <div class="request-card" *ngFor="let req of project.requests">
+        <div class="request-card" *ngFor="let req of project.requests" (click)="validateVisitProfile(req.id)">
           
           <div class="request-info">
 
@@ -409,5 +379,3 @@
 
     </div>
   </div>
-
-</div>

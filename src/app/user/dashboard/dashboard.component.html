@@ -1,0 +1,100 @@
+<div class="user-container">
+  <div class="user-header">
+    <h1>Editar perfil</h1>
+  </div>
+
+  <form class="user-form" (ngSubmit)="validateUpdate()">
+    
+    <div class="form-section">
+      <h2>Información personal</h2>
+
+      <div class="form-group">
+        <label for="name">Nombres</label>
+        <input type="text" id="name" name="name" [(ngModel)]="user.name" placeholder="Juan Ernesto" required>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Apellidos</label>
+        <input type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" placeholder="Perez Hernandez"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="alias">Alias artístico</label>
+        <input type="text" id="alias" name="alias" [(ngModel)]="user.alias" placeholder="DJ Shadow">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Número de teléfono</label>
+        <input type="tel" id="phone" name="phone" [(ngModel)]="user.phone" placeholder="+57 300 123 4567" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" placeholder="tu@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" [(ngModel)]="user.password"
+          placeholder="Dejar en blanco para mantener la actual">
+        <small class="form-hint">Solo completa este campo si deseas cambiar tu contraseña</small>
+      </div>
+    </div>
+
+    
+    <div class="form-section">
+      <h2>Habilidades</h2>
+
+      <div class="form-group">
+        <label>Tus habilidades</label>
+        <div class="skills-selector">
+          <div class="dropdown">
+            <button type="button" class="dropdown-btn" (click)="toggleSkillsDropdown()">
+              Seleccionar habilidades
+              <span class="arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" *ngIf="showSkillsDropdown">
+              <label class="dropdown-item" *ngFor="let skill of availableSkills" (click)="$event.stopPropagation()">
+                <input type="checkbox" [checked]="isSkillSelected(skill)" (change)="toggleSkill(skill)">
+                <span>{{skill}}</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="selected-skills" *ngIf="user.skills.length > 0">
+            <span class="skill-chip" *ngFor="let skill of user.skills">
+              {{skill}}
+              <button type="button" class="remove-skill" (click)="removeSkill(skill)">×</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="form-section">
+      <h2>Sobre mí</h2>
+
+      <div class="form-group">
+        <label for="bio">Biografía</label>
+        <textarea id="bio" name="bio" [(ngModel)]="user.bio"
+          placeholder="Cuéntanos sobre ti, tu experiencia, tus proyectos anteriores..." rows="6"></textarea>
+      </div>
+    </div>
+
+    <!-- Botón de guardar -->
+    <div class="form-actions">
+      <button type="submit" class="btn-primary-plus">
+        <i class="fa-solid fa-floppy-disk icon"></i>Guardar cambios
+      </button>
+    </div>
+
+
+  </form>
+  <div class="form-actions">
+    <button (click)="validateDelete()" class="btn-tertiary-plus">
+      <i class="fa-solid fa-triangle-exclamation icon"></i> Eliminar cuenta
+    </button>
+  </div>
+</div>

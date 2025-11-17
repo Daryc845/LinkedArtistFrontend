@@ -1,0 +1,114 @@
+<!-- Contenido principal -->
+<main class="main-content">
+  <!-- Barra superior -->
+  <div class="top-bar">
+    <button class="btn-secondary" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left icon"></i>Volver
+    </button>
+  </div>
+
+  <!-- Perfil del artista -->
+  <div class="profile-container">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h1 class="profile-name">{{artist?.name}} {{artist?.lastname}}</h1>
+        <p class="profile-alias">{{artist?.alias}}</p>
+      </div>
+
+      <div class="profile-info">
+        <div class="info-section">
+          <h3 class="section-title">Información Personal</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label class="info-label">Email</label>
+              <p class="info-value">{{artist?.email}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Biografía</h3>
+          <p class="bio-text">{{artist?.bio}}</p>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Habilidades</h3>
+          <div class="skills-container">
+            <span class="skill-tag-large" *ngFor="let skill of artist?.skills">
+              {{skill}}
+            </span>
+          </div>
+        </div>
+
+        <!-- Sección de proyectos del artista -->
+        <div class="info-section">
+          <h3 class="section-title">Proyectos en los que ha trabajado</h3>
+          <div class="projects-grid">
+            <div 
+              class="project-card" 
+              *ngFor="let project of artistProjects"
+              (click)="openProjectDetail(project)"
+            >
+              <div class="project-category">{{project.category}}</div>
+              <h3 class="project-title">{{project.title}}</h3>
+              <p class="project-description">{{project.description}}</p>
+              <div class="project-skills">
+                <span class="skill-tag" *ngFor="let skill of project.skills">{{skill}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de detalle del proyecto -->
+<div class="modal-overlay" *ngIf="selectedProject" (click)="closeProjectDetail()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{selectedProject.title}}</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="project-info">
+        <h3>Descripción</h3>
+        <p>{{selectedProject.description}}</p>
+      </div>
+
+      <div class="tasks-section">
+        <h3>Tareas</h3>
+        
+        <div class="tasks-board">
+          <div class="task-column">
+            <h4 class="column-title todo">Por hacer</h4>
+            <div class="task-item" *ngFor="let task of selectedProject.tasks?.todo">
+              {{task}}
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h4 class="column-title in-progress">En progreso</h4>
+            <div class="task-item" *ngFor="let task of selectedProject.tasks?.inProgress">
+              {{task}}
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h4 class="column-title review">En revisión</h4>
+            <div class="task-item" *ngFor="let task of selectedProject.tasks?.review">
+              {{task}}
+            </div>
+          </div>
+
+          <div class="task-column">
+            <h4 class="column-title done">Hecho</h4>
+            <div class="task-item" *ngFor="let task of selectedProject.tasks?.done">
+              {{task}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

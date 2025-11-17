@@ -16,7 +16,7 @@ interface Notification {
   standalone: true,
   selector: 'app-notifications',
   templateUrl: './notification.component.html',
-  styleUrls: ['../profile-styles.css', './notification.component.css'],
+  styleUrls: ['./notification.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterModule],
 })

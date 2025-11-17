@@ -183,6 +183,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .config-section h2 {
@@ -572,6 +573,7 @@
 
 .member-card:hover {
   border-color: var(--blue-primary);
+  cursor: pointer;
 }
 
 .member-info {
@@ -708,6 +710,11 @@
   align-items: center;
 }
 
+.request-card:hover {
+  background: var(--card-hover-bg, #4b4b4b);
+  cursor: pointer;
+}
+
 .request-info {
   display: flex;
   gap: 12px;
@@ -744,6 +751,10 @@
   cursor: pointer;
 }
 
+.btn-accept:hover {
+  background: #107a37;
+}
+
 .btn-reject {
   background: #ef4444;
   color: white;
@@ -751,4 +762,8 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
+}
+
+.btn-reject:hover {
+  background: #961919;
 }

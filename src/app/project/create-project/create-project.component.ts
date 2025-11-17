@@ -13,7 +13,7 @@ interface Task {
   standalone: true,
   selector: 'app-create-project',
   templateUrl: './create-project.component.html',
-  styleUrls: ['../project-styles.css', './create-project.component.css'],
+  styleUrls: ['./create-project.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [FormsModule, CommonModule, RouterModule],
 })

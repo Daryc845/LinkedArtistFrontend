@@ -1,206 +1,170 @@
-<div class="app-container">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
-      <span class="logo-text">Petro Urrego</span>
+<!-- Contenido principal -->
+<main class="main-content">
+  <div class="create-container">
+    <div class="create-header">
+      <h1>Crear un nuevo proyecto</h1>
     </div>
 
-    <nav class="nav-menu">
-      <a routerLink="../dashboard" class="nav-item active">
-        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
-        <span class="nav-text">Proyectos</span>
-      </a>
-      <a routerLink="/profile/dashboard" class="nav-item">
-        <span class="nav-icon"><i class="fa-regular fa-user"></i></span>
-        <span class="nav-text">Perfil</span>
-      </a>
-      <a routerLink="/profile/notifications" class="nav-item">
-        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
-        <span class="nav-text">Notificaciones</span>
-      </a>
-      <a routerLink="/artists" class="nav-item">
-        <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
-        <span class="nav-text">Artistas</span>
-      </a>
-    </nav>
+    <form class="create-form" (ngSubmit)="validateCreate()">
+      <!-- Información básica -->
+      <div class="form-section">
+        <div class="form-group">
+          <label for="title">Título del proyecto</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title"
+            [(ngModel)]="project.title"
+            placeholder="Ej: Producción de álbum experimental"
+            required
+          >
+        </div>
 
-    <div class="logout-section">
-      <button class="logout-btn" (click)="logout()">
-        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-        <span class="nav-text">Cerrar sesión</span>
-      </button>
-    </div>
-  </aside>
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea 
+            id="description" 
+            name="description"
+            [(ngModel)]="project.description"
+            placeholder="Describe tu proyecto, objetivos y visión..."
+            rows="5"
+            required
+          ></textarea>
+        </div>
 
-  <!-- Contenido principal -->
-  <main class="main-content">
-    <div class="create-container">
-      <div class="create-header">
-        <h1>Crear un nuevo proyecto</h1>
+        <div class="form-group">
+          <label for="category">Categoría</label>
+          <select 
+            id="category" 
+            name="category"
+            [(ngModel)]="project.category"
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            <option value="Producción">Producción</option>
+            <option value="Composición">Composición</option>
+            <option value="Grabación">Grabación</option>
+            <option value="Mezcla">Mezcla</option>
+            <option value="Masterización">Masterización</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Habilidades necesarias</label>
+          <div class="skills-selector">
+            <div class="dropdown">
+              <button 
+                type="button" 
+                class="dropdown-btn" 
+                (click)="toggleSkillsDropdown()"
+              >
+                Seleccionar habilidades
+                <span class="arrow">▼</span>
+              </button>
+              <div class="dropdown-menu" *ngIf="showSkillsDropdown">
+                <label 
+                  class="dropdown-item" 
+                  *ngFor="let skill of availableSkills"
+                  (click)="$event.stopPropagation()"
+                >
+                  <input 
+                    type="checkbox" 
+                    [checked]="isSkillSelected(skill)"
+                    (change)="toggleSkill(skill)"
+                  >
+                  <span>{{skill}}</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="selected-skills" *ngIf="project.skills.length > 0">
+              <span 
+                class="skill-chip" 
+                *ngFor="let skill of project.skills"
+              >
+                {{skill}}
+                <button 
+                  type="button" 
+                  class="remove-skill"
+                  (click)="removeSkill(skill)"
+                >×</button>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <form class="create-form" (ngSubmit)="validateCreate()">
-        <!-- Información básica -->
-        <div class="form-section">
-          <div class="form-group">
-            <label for="title">Título del proyecto</label>
-            <input 
-              type="text" 
-              id="title" 
-              name="title"
-              [(ngModel)]="project.title"
-              placeholder="Ej: Producción de álbum experimental"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="description">Descripción</label>
-            <textarea 
-              id="description" 
-              name="description"
-              [(ngModel)]="project.description"
-              placeholder="Describe tu proyecto, objetivos y visión..."
-              rows="5"
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="category">Categoría</label>
-            <select 
-              id="category" 
-              name="category"
-              [(ngModel)]="project.category"
-              required
-            >
-              <option value="">Selecciona una categoría</option>
-              <option value="Producción">Producción</option>
-              <option value="Composición">Composición</option>
-              <option value="Grabación">Grabación</option>
-              <option value="Mezcla">Mezcla</option>
-              <option value="Masterización">Masterización</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Habilidades necesarias</label>
-            <div class="skills-selector">
-              <div class="dropdown">
-                <button 
-                  type="button" 
-                  class="dropdown-btn" 
-                  (click)="toggleSkillsDropdown()"
-                >
-                  Seleccionar habilidades
-                  <span class="arrow">▼</span>
-                </button>
-                <div class="dropdown-menu" *ngIf="showSkillsDropdown">
-                  <label 
-                    class="dropdown-item" 
-                    *ngFor="let skill of availableSkills"
-                    (click)="$event.stopPropagation()"
-                  >
-                    <input 
-                      type="checkbox" 
-                      [checked]="isSkillSelected(skill)"
-                      (change)="toggleSkill(skill)"
-                    >
-                    <span>{{skill}}</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="selected-skills" *ngIf="project.skills.length > 0">
-                <span 
-                  class="skill-chip" 
-                  *ngFor="let skill of project.skills"
-                >
-                  {{skill}}
-                  <button 
-                    type="button" 
-                    class="remove-skill"
-                    (click)="removeSkill(skill)"
-                  >×</button>
-                </span>
-              </div>
-            </div>
-          </div>
+      <!-- Tareas iniciales -->
+      <div class="form-section">
+        <h2>Añadir tareas iniciales</h2>
+        
+        <div class="task-input-group">
+          <input 
+            type="text" 
+            placeholder="Escribe una tarea..."
+            [(ngModel)]="newTaskName"
+            name="newTask"
+            (keyup.enter)="addTask()"
+          >
+          <button 
+            type="button" 
+            class="btn-add-task btn-primary-plus"
+            (click)="addTask()"
+          >
+            Añadir tarea
+          </button>
         </div>
 
-        <!-- Tareas iniciales -->
-        <div class="form-section">
-          <h2>Añadir tareas iniciales</h2>
-          
-          <div class="task-input-group">
+        <div class="tasks-list" *ngIf="project.tasks.length > 0">
+          <div 
+            class="task-item-create" 
+            *ngFor="let task of project.tasks; let i = index"
+          >
             <input 
               type="text" 
-              placeholder="Escribe una tarea..."
-              [(ngModel)]="newTaskName"
-              name="newTask"
-              (keyup.enter)="addTask()"
+              [(ngModel)]="task.name"
+              [name]="'task-' + i"
+              [readonly]="task.id !== editingTaskId"
+              [class.editing]="task.id === editingTaskId"
             >
-            <button 
-              type="button" 
-              class="btn-add-task"
-              (click)="addTask()"
-            >
-              Añadir tarea
-            </button>
-          </div>
-
-          <div class="tasks-list" *ngIf="project.tasks.length > 0">
-            <div 
-              class="task-item-create" 
-              *ngFor="let task of project.tasks; let i = index"
-            >
-              <input 
-                type="text" 
-                [(ngModel)]="task.name"
-                [name]="'task-' + i"
-                [readonly]="task.id !== editingTaskId"
-                [class.editing]="task.id === editingTaskId"
+            <div class="task-actions">
+              <button 
+                type="button" 
+                class="btn-icon edit"
+                (click)="editTask(task)"
+                *ngIf="task.id !== editingTaskId"
               >
-              <div class="task-actions">
-                <button 
-                  type="button" 
-                  class="btn-icon edit"
-                  (click)="editTask(task)"
-                  *ngIf="task.id !== editingTaskId"
-                >
-                  <i class="fa-solid fa-pencil"></i>
-                </button>
-                <button 
-                  type="button" 
-                  class="btn-icon save"
-                  (click)="saveTask()"
-                  *ngIf="task.id === editingTaskId"
-                >
-                  ✓
-                </button>
-                <button 
-                  type="button" 
-                  class="btn-icon delete"
-                  (click)="deleteTask(i)"
-                >
-                  <i class="fa-solid fa-x"></i>
-                </button>
-              </div>
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button 
+                type="button" 
+                class="btn-icon save"
+                (click)="saveTask()"
+                *ngIf="task.id === editingTaskId"
+              >
+                ✓
+              </button>
+              <button 
+                type="button" 
+                class="btn-icon delete"
+                (click)="deleteTask(i)"
+              >
+                <i class="fa-solid fa-x"></i>
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Botones de acción -->
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" (click)="cancel()">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-submit">
-            Crear Proyecto
-          </button>
-        </div>
-      </form>
-    </div>
-  </main>
-</div>
+      <!-- Botones de acción -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-secondary-plus">
+          <i class="fa-solid fa-image icon"></i>Crear Proyecto
+        </button>
+      </div>
+    </form>
+  </div>
+</main>

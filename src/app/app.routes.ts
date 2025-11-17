@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { authRoutes } from './auth/auth.routes';
 import { projectRoutes } from './project/project.routes';
-import { profileRoutes } from './profile/profile.routes';
+import { userRoutes } from './user/user.routes';
+import { artistRoutes } from './artist/artist.routes';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -12,11 +13,15 @@ export const routes: Routes = [
   },
   {
     path: 'project',
-    children: projectRoutes
+    children: projectRoutes,
   },
   {
-    path: 'profile',
-    children: profileRoutes
+    path: 'user',
+    children: userRoutes
+  },
+  {
+    path: 'artist',
+    children: artistRoutes
   },
 
   { path: '**', redirectTo: 'auth/login' }

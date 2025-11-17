@@ -38,7 +38,7 @@ interface Project {
   standalone: true,
   selector: 'app-manage-project',
   templateUrl: './manage-project.component.html',
-  styleUrls: ['../project-styles.css', './manage-project.component.css'],
+  styleUrls: ['./manage-project.component.css'],
   encapsulation: ViewEncapsulation.None,
   imports: [FormsModule, CommonModule, RouterModule],
 })
@@ -139,6 +139,47 @@ export class ManageProjectComponent implements OnInit {
     this.loadProject(projectId);
   }
 
+  validateDelete(): void {
+    // Confirmación inicial
+    const confirmDelete = confirm(
+      "¿Estás seguro de que deseas eliminar el proyecto? Esta acción es irreversible."
+    );
+
+    if (!confirmDelete) {
+      this.snackBar.open('Operación cancelada', 'Cerrar', {
+        duration: 2500,
+        panelClass: ['warning-snackbar']
+      });
+      return;
+    }
+
+    // Aquí va el backend real
+    // this.userService.deleteAccount(this.profile.id).subscribe({
+    //   next: () => {
+    //     ...
+    //   },
+    //   error: () => {
+    //     ...
+    //   }
+    // });
+
+    // Simulación de eliminación exitosa
+    this.snackBar.open('El proyecto ha sido eliminado correctamente', 'Cerrar', {
+      duration: 3000,
+      panelClass: ['success-snackbar']
+    });
+
+    // Simular tiempo de procesamiento antes de salir
+    /*setTimeout(() => {
+      // Limpieza local si es necesario
+      localStorage.removeItem('token');
+
+      // Redirigir al login
+      
+    }, 1000);*/
+    this.router.navigate(['/project/dashboard']);
+  }
+
   loadProject(id: string): void {
     // BACKEND LOGIC TO LOAD PROJECT
     // this.projectService.getProject(id).subscribe({
@@ -152,6 +193,10 @@ export class ManageProjectComponent implements OnInit {
     //     });
     //   }
     // });
+  }
+
+  validateVisitProfile(artistId: number): void {
+    this.router.navigate([`/artist/${artistId}`]);
   }
 
   // Gestión de habilidades

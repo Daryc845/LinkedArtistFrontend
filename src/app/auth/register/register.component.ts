@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { F } from '@angular/cdk/keycodes';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -13,22 +14,33 @@ import { FormsModule } from '@angular/forms';
   encapsulation: ViewEncapsulation.None,
   imports: [
     RouterModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ]
 })
 export class RegisterComponent {
 
-  fullName: string = '';
+  name: string = '';
+  lastName: string = '';
   artistName: string = '';
   email: string = '';
   phone: string = '';
   password: string = '';
 
-  constructor(private router: Router, private snackBar: MatSnackBar) {}
+  payload = {
+      name: this.name,
+      lastname: this.lastName,
+      nickname: this.artistName,
+      email: this.email,
+      celphone: this.phone,
+      password: this.password
+    };
+
+  constructor(private router: Router, private snackBar: MatSnackBar, private http: HttpClient) {}
 
   onSubmit(): boolean {
     
-    if (!this.fullName || !this.email || !this.phone || !this.password) {
+    if (!this.name || !this.lastName || !this.email || !this.phone || !this.password) {
       this.snackBar.open('Debe completar todos los campos', 'Cerrar', {
         duration: 3000,
         panelClass: ['error-snackbar']
@@ -66,7 +78,26 @@ export class RegisterComponent {
     return true;
   }
 
-  validateRegister(): void {
+  doPetition(): Promise<boolean> {
+
+    return new Promise((resolve) => {
+      this.http.post('http://localhost:8080/auth/register', this.payload)
+        .subscribe({
+          next: (response: any) => {
+            console.log('Registro exitoso:', response);
+            localStorage.setItem('access_token', response.data.access_token);
+            localStorage.setItem('refresh_token', response.data.refresh_token);
+            resolve(true);
+          },
+          error: (error) => {
+            console.error('Error en el registro:', error);
+            resolve(false);
+          }
+        });
+    });
+  }
+
+  async validateRegister(): Promise<void> {
 
     if (this.onSubmit()) {
       this.snackBar.open('Iniciando sesión...', 'Cerrar', {
@@ -74,14 +105,24 @@ export class RegisterComponent {
         panelClass: ['warning-snackbar']
       });
       
+      const success = await this.doPetition();
+
+      if (success) {
+        this.snackBar.open('Se ha registrado exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+
+        this.router.navigate(['../login']);
+      }else{
+        this.snackBar.open('HUBO UN ERRROR LA PTM', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
       //BACKEND REGISTER SUCCESS LOGIC HERE
 
-      this.snackBar.open('Se ha registrado exitosamente', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
-
-      this.router.navigate(['../login']);
+      
     }
   }
 
