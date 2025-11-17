@@ -3,7 +3,7 @@ services:
     name: LinkedArtistFrontend
     env: static
     buildCommand: npm install && npx ng build --configuration production
-    staticPublishPath: dist/LinkedArtistFrontend
+    staticPublishPath: dist/LinkedArtistFrontend/browser
     build:
       env:
         BUN_DISABLE: "1"
