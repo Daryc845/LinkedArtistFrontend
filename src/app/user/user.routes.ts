@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { UserDashboardComponent } from './dashboard/dashboard.component';
-import { NotificationsComponent } from './notifications/notification.component';
+import { UserDashboardComponent } from './components/dashboard/dashboard.component';
+import { NotificationsComponent } from './components/notification/notification.component';
 // Importa el AuthGuard si quieres proteger estas rutas
 // import { AuthGuard } from '../auth/guards/auth.guard';
 

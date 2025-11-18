@@ -1,3 +1,5 @@
+<!-- dashboard.component.html (ACTUALIZADO) -->
+
 <!-- Contenido principal -->
 <main class="main-content">
   <!-- Barra superior -->
@@ -9,6 +11,7 @@
           type="text" 
           placeholder="Buscar artistas..." 
           [(ngModel)]="searchQuery"
+          (keyup.enter)="searchArtists()"
         >
       </div>
 
@@ -19,8 +22,15 @@
             <span class="arrow">▼</span>
           </button>
           <div class="dropdown-menu" *ngIf="showSkillsDropdown">
-            <label class="dropdown-item" *ngFor="let skill of availableSkills">
-              <input type="checkbox" [(ngModel)]="skill.selected">
+            <label 
+              class="dropdown-item" 
+              *ngFor="let skill of availableSkills"
+              (click)="$event.stopPropagation()"
+            >
+              <input 
+                type="checkbox" 
+                [(ngModel)]="skill.selected"
+              >
               <span>{{skill.name}}</span>
             </label>
           </div>
@@ -41,11 +51,21 @@
         *ngFor="let artist of filteredArtists"
         (click)="viewArtistProfile(artist)"
       >
-        <h3 class="project-title">{{artist.name}} {{artist.lastname}}</h3>
+        <h3 class="project-title">
+          <span *ngIf="artist.name">{{artist.name}} {{artist.lastname}}</span>
+          <span *ngIf="!artist.name">{{artist.alias}}</span>
+        </h3>
         <div class="project-skills">
           <span class="skill-tag" *ngFor="let skill of artist.skills">{{skill}}</span>
         </div>
         <p class="project-description">{{artist.bio}}</p>
+      </div>
+
+      <!-- Mensaje cuando no hay resultados -->
+      <div class="empty-state" *ngIf="filteredArtists.length === 0">
+        <i class="fa-solid fa-users-slash empty-icon"></i>
+        <h3>No se encontraron artistas</h3>
+        <p>Intenta con otros filtros de búsqueda</p>
       </div>
     </div>
   </div>

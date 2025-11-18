@@ -175,9 +175,4 @@ export class CreateProjectComponent {
       this.router.navigate(['../dashboard'], { relativeTo: this.route });
     }
   }
-
-  logout(): void {
-    console.log('Cerrando sesión...');
-    this.router.navigate(['/login']);
-  }
 }

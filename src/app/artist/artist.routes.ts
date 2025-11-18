@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ArtistProfileComponent } from './artist-profile/artist-profile.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ArtistProfileComponent } from './components/artist-profile/artist-profile.component';
 
 export const artistRoutes: Routes = [
   {

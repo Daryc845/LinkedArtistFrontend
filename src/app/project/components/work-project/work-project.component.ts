@@ -262,13 +262,4 @@ export class WorkProjectComponent implements OnInit {
   closeMembersModal(): void {
     this.showMembersListModal = false;
   }
-
-  logout(): void {
-    console.log('Cerrando sesión...');
-    this.snackBar.open('Sesión cerrada exitosamente', 'Cerrar', {
-      duration: 3000,
-      panelClass: ['success-snackbar']
-    });
-    this.router.navigate(['/auth/login']);
-  }
 }
