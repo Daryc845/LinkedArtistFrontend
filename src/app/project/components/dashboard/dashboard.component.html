@@ -1,3 +1,5 @@
+<!-- dashboard.component.html (ACTUALIZADO) -->
+
 <!-- Contenido principal -->
 <main class="main-content">
   <!-- Barra superior -->
@@ -24,8 +26,16 @@
             <span class="arrow">▼</span>
           </button>
           <div class="dropdown-menu" *ngIf="showSkillsDropdown">
-            <label class="dropdown-item" *ngFor="let skill of availableSkills">
-              <input type="checkbox" [(ngModel)]="skill.selected" (change)="onSearch()">
+            <label 
+              class="dropdown-item" 
+              *ngFor="let skill of availableSkills"
+              (click)="$event.stopPropagation()"
+            >
+              <input 
+                type="checkbox" 
+                [(ngModel)]="skill.selected"
+                (change)="onSkillsChange()"
+              >
               <span>{{skill.name}}</span>
             </label>
           </div>
@@ -37,38 +47,50 @@
             <span class="arrow">▼</span>
           </button>
           <div class="dropdown-menu" *ngIf="showCategoryDropdown">
-            <label class="dropdown-item" *ngFor="let category of categories">
+            <label 
+              class="dropdown-item" 
+              *ngFor="let category of categories"
+              (click)="$event.stopPropagation()"
+            >
               <input 
                 type="radio" 
                 name="category" 
                 [(ngModel)]="selectedCategory" 
                 [value]="category"
-                (change)="onSearch()">
+                (change)="onCategoryChange()"
+              >
               <span>{{category}}</span>
             </label>
           </div>
         </div>
       </div>
+
       <div class="toggle-buttons">
         <button 
           class="toggle-btn" 
           [class.active]="viewMode === 'public'" 
-          (click)="viewMode = 'public'; onSearch()">
+          (click)="changeViewMode('public')"
+          title="Proyectos públicos"
+        >
           <i class="fa-solid fa-users"></i>
         </button>
 
         <button 
           class="toggle-btn" 
-          [class.active]="viewMode === 'profile'" 
-          (click)="viewMode = 'profile'; onSearch()">
-          <i class="fa-solid fa-person"></i>
+          [class.active]="viewMode === 'registered'" 
+          (click)="changeViewMode('registered')"
+          title="Mis colaboraciones"
+        >
+          <i class="fa-solid fa-hand-fist"></i>
         </button>
 
         <button 
           class="toggle-btn" 
-          [class.active]="viewMode === 'registered'" 
-          (click)="viewMode = 'registered'; onSearch()">
-          <i class="fa-solid fa-hand-fist"></i>
+          [class.active]="viewMode === 'profile'" 
+          (click)="changeViewMode('profile')"
+          title="Mis proyectos"
+        >
+          <i class="fa-solid fa-person"></i>
         </button>
       </div>
     </div>
@@ -86,7 +108,7 @@
         <h3 class="project-title">{{project.title}}</h3>
         <p class="project-description">{{project.description}}</p>
         <div class="project-skills">
-          <span class="skill-tag" *ngFor="let skill of project.skills">{{skill.name}}</span>
+          <span class="skill-tag" *ngFor="let skill of project.skills">{{skill}}</span>
         </div>
       </div>
     </div>
@@ -98,7 +120,8 @@
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>{{selectedProject.title}}</h2>
-      <!-- Mostrar si estoy viendo proyectos de otros -->
+      
+      <!-- Mostrar si estoy viendo proyectos públicos -->
       <button 
         class="btn-primary" 
         *ngIf="viewMode === 'public'" 
@@ -110,14 +133,15 @@
       <button 
         class="btn-secondary" 
         *ngIf="viewMode === 'profile'" 
-        (click)="manageProject(selectedProject.projectid)">
+        (click)="manageProject(selectedProject.id)">
         <i class="fa-solid fa-pen icon"></i>Gestionar
       </button>
 
+      <!-- Mostrar si estoy viendo proyectos donde colaboro -->
       <button 
         class="btn-secondary" 
         *ngIf="viewMode === 'registered'" 
-        (click)="workProject(selectedProject.projectid)">
+        (click)="workProject(selectedProject.id)">
         <i class="fa-solid fa-person-walking-arrow-right icon"></i>Ingresar
       </button>
     </div>
@@ -128,35 +152,35 @@
         <p>{{selectedProject.description}}</p>
       </div>
 
-      <div class="tasks-section">
+      <div class="tasks-section" *ngIf="selectedProject.tasks">
         <h3>Tareas</h3>
         
         <div class="tasks-board">
           <div class="task-column">
             <h4 class="column-title todo">Por hacer</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'to be done'">
-              {{task.name}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks.todo">
+              {{task}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title in-progress">En progreso</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'in progress'">
-              {{task.name}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks.inProgress">
+              {{task}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title review">En revisión</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'under review'">
-              {{task.name}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks.review">
+              {{task}}
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title done">Hecho</h4>
-            <div class="task-item" *ngFor="let task of selectedProject.tasks | filterTasks:'done'">
-              {{task.name}}
+            <div class="task-item" *ngFor="let task of selectedProject.tasks.done">
+              {{task}}
             </div>
           </div>
         </div>

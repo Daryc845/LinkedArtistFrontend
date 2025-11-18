@@ -6,8 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProjectService } from '../../services/create-project.service';
 import { CreateProjectRequest } from '../../models/requests/create-project.requests';
 import { CreateProjectResponse } from '../../models/responses/create-project.responses';
-import { Project } from '../../models/project.model';
-import { Task } from '../../models/task.model';
+import { Project, Task } from '../../models/create-project.model';
 
 @Component({
   standalone: true,
@@ -139,7 +138,7 @@ export class CreateProjectComponent {
       const createProjectRequest: CreateProjectRequest = {
         title: this.project.title,
         category: this.project.category,
-        userId: 'current-user-id', // Aquí deberías obtener el ID del usuario autenticado
+        userId: 'current-user-id', // Aquí se obtiene el id del usuario actual
         skills: this.project.skills.map(skill => ({ name: skill })),
         initialTasks: this.project.tasks.map(task => ({ name: task.name }))
       };

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
-import { ManageProjectComponent } from './manage-project/manage-project.component';
+import { ManageProjectComponent } from './components/manage-project/manage-project.component';
 import { WorkProjectComponent } from './work-project/work-project.component';
 
 export const projectRoutes: Routes = [
