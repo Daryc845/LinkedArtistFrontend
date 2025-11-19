@@ -17,7 +17,7 @@ import {
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = 'https://partyst-api-gateway.onrender.com';
 
   constructor(private http: HttpClient) { }
 

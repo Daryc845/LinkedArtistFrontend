@@ -8,20 +8,13 @@ import { ProjectResponse, MembersResponse, BaseResponse } from '../models/respon
   providedIn: 'root'
 })
 export class WorkProjectService {
-  private apiUrl = 'http://localhost:3000/api'; // Ajusta según tu backend
+  private apiUrl = 'https://partyst-api-gateway.onrender.com';
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Obtener información del proyecto
-   * Endpoint: GET /projects/{id}
-   * Se usa cuando se carga la página según el id de la URL /project/work/{id}
-   */
   getProject(id: number): Observable<ProjectResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.get<ProjectResponse>(`${this.apiUrl}/projects/${id}`);
-    
-    // ====== PROYECTO QUEMADO - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
     return new Observable(observer => {
       setTimeout(() => {
         observer.next({
@@ -87,33 +80,20 @@ export class WorkProjectService {
         observer.complete();
       }, 500);
     });
-    // ====== FIN PROYECTO QUEMADO ======
   }
 
-  /**
-   * Actualizar estado de tarea (drag & drop)
-   * Endpoint: PUT /projects/tasks/state
-   * Se usa cuando se arrastra una tarea de un estado a otro
-   */
   updateTaskState(request: UpdateTaskStateRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/state`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
     return new Observable(observer => {
       setTimeout(() => {
         observer.next({ success: true, message: 'Task state updated successfully' });
         observer.complete();
       }, 500);
     });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 
-  /**
-   * Obtener miembros del proyecto
-   * Endpoint: GET /projects/{id}/members
-   * Se usa cuando se presiona "Ver integrantes"
-   */
   getMembers(projectId: number): Observable<MembersResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.get<MembersResponse>(`${this.apiUrl}/projects/${projectId}/members`);
@@ -163,6 +143,5 @@ export class WorkProjectService {
         observer.complete();
       }, 500);
     });
-    // ====== FIN DATOS QUEMADOS ======
   }
 }
