@@ -8,7 +8,7 @@ import { RegisterResponse } from '../models/responses/register.responses';
   providedIn: 'root'
 })
 export class RegisterService {
-  private apiUrl = 'ttps://partyst-api-gateway.onrender.com/auth/register';
+  private apiUrl = 'https://partyst-api-gateway.onrender.com/auth/register';
 
   constructor(private http: HttpClient) { }
 
