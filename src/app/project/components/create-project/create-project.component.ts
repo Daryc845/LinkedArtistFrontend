@@ -153,7 +153,7 @@ export class CreateProjectComponent {
         description: this.project.description,
         userId: this.tokenService.getUserId()!, 
         skills: this.project.skills.map(skill => ({ skillId: this.getSkillIdByName(skill)! })),
-        tasks: this.project.tasks.map(task => ({ name: task.name }))
+        tasks: this.project.tasks.map(task => ({ name: task.name, state: 'to be done' }))
       };
 
       console.log("PROJECT ACTUAL:", this.project);

@@ -31,11 +31,25 @@ export interface ProjectJoinResponse {
 }
 
 /**
+ * Información de un usuario asignado a una tarea
+ */
+export interface UserBasicInfo {
+  userId: number;
+  name: string;
+  lastname: string;
+  email: string;
+  nickname: string;
+}
+
+/**
  * Información de una tarea en el proyecto
  */
 export interface TaskBasic {
   name: string;
   state: 'to be done' | 'in progress' | 'under review' | 'done';
+  userEmail: string;
+  userName: string;
+  userLastname: string;
 }
 
 /**
@@ -45,6 +59,7 @@ export interface ProjectDetail {
   projectId: number;
   name: string;
   description: string;
+  users: any[];  // Array de usuarios del proyecto
   category: string;
   skills: Array<{ name: string }>;
   tasks: TaskBasic[];

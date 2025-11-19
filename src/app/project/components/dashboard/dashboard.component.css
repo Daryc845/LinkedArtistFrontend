@@ -365,6 +365,34 @@
   color: var(--text-primary);
 }
 
+.task-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.task-user {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.task-user i {
+  color: var(--blue-primary);
+  margin-right: 4px;
+}
+
+.task-user small {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .projects-grid {

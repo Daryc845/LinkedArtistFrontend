@@ -4,5 +4,5 @@ export interface CreateProjectRequest {
   description: string;
   userId: number;
   skills: { skillId: number }[];
-  tasks: { name: string }[];
+  tasks: { name: string; state: string }[];
 }

@@ -9,7 +9,8 @@ import {
   UpdateProjectRequest, 
   CreateTaskRequest, 
   UpdateTaskStateRequest, 
-  UpdateTaskRequest, 
+  UpdateTaskRequest,
+  DeleteTaskRequest, 
   RemoveMemberRequest, 
   AcceptRequestRequest, 
   RejectRequestRequest 
@@ -138,8 +139,6 @@ export class ManageProjectComponent implements OnInit {
    * Organizar tareas del backend en columnas
    */
   organizeTasks(tasks: any[]): void {
-    let taskId = 1;
-    
     this.project.tasks = {
       todo: [],
       inProgress: [],
@@ -148,11 +147,25 @@ export class ManageProjectComponent implements OnInit {
     };
 
     tasks.forEach(task => {
+      console.log('📝 Procesando tarea del backend:', task);
+      
       const localTask: Task = {
-        id: taskId++,
+        id: task.taskId,  // ✅ Usar el ID real del backend
         name: task.name,
-        assignee: task.user ? `${task.user.name} ${task.user.lastname}` : undefined
+        assignee: undefined,
+        userEmail: undefined,
+        userNickname: undefined
       };
+
+      // El backend envía userEmail, userName, userLastname
+      if (task.userEmail && task.userEmail !== 'Sin email') {
+        localTask.assignee = `${task.userName || ''} ${task.userLastname || ''}`.trim();
+        localTask.userEmail = task.userEmail;
+        // Si el backend envía nickname, usarlo; si no, usar el nombre
+        localTask.userNickname = task.userName || 'Sin alias';
+      }
+
+      console.log('✅ Tarea procesada:', localTask);
 
       switch (task.state) {
         case 'to be done':
@@ -326,10 +339,9 @@ export class ManageProjectComponent implements OnInit {
 
     const sourceIndex = this.project.tasks[sourceColumn].indexOf(this.draggedTask);
     if (sourceIndex > -1) {
-      this.project.tasks[sourceColumn].splice(sourceIndex, 1);
-      this.project.tasks[targetColumn].push(this.draggedTask);
-
-      // Actualizar en el backend
+      const taskToMove = this.draggedTask; // Guardar referencia para usar después
+      
+      // Actualizar en el backend primero
       const stateMap = {
         'todo': 'to be done',
         'inProgress': 'in progress',
@@ -338,25 +350,29 @@ export class ManageProjectComponent implements OnInit {
       };
 
       const request: UpdateTaskStateRequest = {
-        projectid: this.projectId,
-        taskid: this.draggedTask.id,
-        name: this.draggedTask.name,
+        taskId: taskToMove.id,
         state: stateMap[targetColumn] as any
       };
 
       this.manageProjectService.updateTaskState(request).subscribe({
         next: (response) => {
           if (response.code && response.code >= 200 && response.code < 300) {
+            // Solo actualizar el UI si el backend confirma el cambio
+            this.project.tasks[sourceColumn].splice(sourceIndex, 1);
+            this.project.tasks[targetColumn].push(taskToMove);
+            
             this.snackBar.open('Tarea movida exitosamente', 'Cerrar', {
               duration: 2000,
-              panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+              panelClass: ['success-snackbar']
             });
           }
         },
         error: (error) => {
           console.error('Error updating task state:', error);
-          // Revertir el cambio si falla
-          this.loadProject(this.projectId);
+          this.snackBar.open('Error al mover la tarea', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
         }
       });
     }
@@ -525,26 +541,43 @@ export class ManageProjectComponent implements OnInit {
 
   /**
    * Confirmar y eliminar tarea
+   * Endpoint: DELETE /task/delete
    */
   confirmDeleteTask(): void {
     if (!this.editingTask || !this.editingTaskColumn) return;
 
     if (confirm(`¿Estás seguro de que quieres eliminar la tarea "${this.editingTask.name}"?`)) {
-      const column = this.editingTaskColumn as keyof Project['tasks'];
-      const index = this.project.tasks[column].indexOf(this.editingTask);
-      
-      if (index > -1) {
-        this.project.tasks[column].splice(index, 1);
-        
-        this.snackBar.open('Tarea eliminada exitosamente', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
-        });
+      const request: DeleteTaskRequest = {
+        projectId: this.projectId,
+        taskId: this.editingTask.id
+      };
 
-        // TODO: Implementar endpoint de eliminación de tarea en el backend si existe
-        
-        this.closeTaskModal();
-      }
+      this.manageProjectService.deleteTask(request).subscribe({
+        next: (response) => {
+          if (response.code && response.code >= 200 && response.code < 300) {
+            const column = this.editingTaskColumn as keyof Project['tasks'];
+            const index = this.project.tasks[column].indexOf(this.editingTask!);
+            
+            if (index > -1) {
+              this.project.tasks[column].splice(index, 1);
+            }
+            
+            this.snackBar.open('Tarea eliminada exitosamente', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+
+            this.closeTaskModal();
+          }
+        },
+        error: (error) => {
+          this.snackBar.open('Error al eliminar la tarea', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
+          console.error('Error deleting task:', error);
+        }
+      });
     }
   }
   

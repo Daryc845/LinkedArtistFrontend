@@ -767,3 +767,26 @@
 .btn-reject:hover {
   background: #961919;
 }
+
+/* Mensaje de asignación actual en modal de tarea */
+.current-assignee {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border-left: 3px solid var(--blue-primary);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.current-assignee i {
+  color: var(--blue-primary);
+  margin-right: 6px;
+}
+
+.current-assignee strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}

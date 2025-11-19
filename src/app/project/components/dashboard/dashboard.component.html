@@ -159,28 +159,44 @@
           <div class="task-column">
             <h4 class="column-title todo">Por hacer</h4>
             <div class="task-item" *ngFor="let task of selectedProject.tasks.todo">
-              {{task}}
+              <div class="task-name">{{task.name}}</div>
+              <div class="task-user" *ngIf="task.userEmail !== 'Sin email'">
+                <i class="fa-solid fa-user"></i> {{task.userName}} {{task.userLastname}}
+                <br><small>{{task.userEmail}}</small>
+              </div>
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title in-progress">En progreso</h4>
             <div class="task-item" *ngFor="let task of selectedProject.tasks.inProgress">
-              {{task}}
+              <div class="task-name">{{task.name}}</div>
+              <div class="task-user" *ngIf="task.userEmail !== 'Sin email'">
+                <i class="fa-solid fa-user"></i> {{task.userName}} {{task.userLastname}}
+                <br><small>{{task.userEmail}}</small>
+              </div>
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title review">En revisión</h4>
             <div class="task-item" *ngFor="let task of selectedProject.tasks.review">
-              {{task}}
+              <div class="task-name">{{task.name}}</div>
+              <div class="task-user" *ngIf="task.userEmail !== 'Sin email'">
+                <i class="fa-solid fa-user"></i> {{task.userName}} {{task.userLastname}}
+                <br><small>{{task.userEmail}}</small>
+              </div>
             </div>
           </div>
 
           <div class="task-column">
             <h4 class="column-title done">Hecho</h4>
             <div class="task-item" *ngFor="let task of selectedProject.tasks.done">
-              {{task}}
+              <div class="task-name">{{task.name}}</div>
+              <div class="task-user" *ngIf="task.userEmail !== 'Sin email'">
+                <i class="fa-solid fa-user"></i> {{task.userName}} {{task.userLastname}}
+                <br><small>{{task.userEmail}}</small>
+              </div>
             </div>
           </div>
         </div>

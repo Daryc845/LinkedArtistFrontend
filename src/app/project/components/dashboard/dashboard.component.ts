@@ -175,25 +175,32 @@ export class DashboardComponent implements OnInit {
       next: (response) => {
         if (response.code && response.code >= 200 && response.code < 300) {
           const tasks = {
-            todo: [] as string[],
-            inProgress: [] as string[],
-            review: [] as string[],
-            done: [] as string[]
+            todo: [] as any[],
+            inProgress: [] as any[],
+            review: [] as any[],
+            done: [] as any[]
           };
           console.log('📥 Detalles del proyecto recibidos:', response);
           response.data.tasks.forEach(task => {
+            const taskInfo = {
+              name: task.name,
+              userEmail: task.userEmail,
+              userName: task.userName,
+              userLastname: task.userLastname
+            };
+            
             switch (task.state) {
               case 'to be done':
-                tasks.todo.push(task.name);
+                tasks.todo.push(taskInfo);
                 break;
               case 'in progress':
-                tasks.inProgress.push(task.name);
+                tasks.inProgress.push(taskInfo);
                 break;
               case 'under review':
-                tasks.review.push(task.name);
+                tasks.review.push(taskInfo);
                 break;
               case 'done':
-                tasks.done.push(task.name);
+                tasks.done.push(taskInfo);
                 break;
             }
           });

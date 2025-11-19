@@ -26,10 +26,10 @@
                 [class.selected]="editingTask?.id === task.id"
               >
                 <div class="task-name">{{task.name}}</div>
-                <div class="task-assignee" *ngIf="task.assignee">
-                  <i class="fa-solid fa-user"></i> {{task.assignee}}
+                <div class="task-assignee" *ngIf="task.userNickname">
+                  <i class="fa-solid fa-user"></i> {{task.userNickname}}
                 </div>
-                <div class="task-warning" *ngIf="!task.assignee">
+                <div class="task-warning" *ngIf="!task.userNickname">
                   <i class="fa-solid fa-exclamation-triangle"></i> Sin encargado
                 </div>
               </div>
@@ -53,8 +53,8 @@
               >
                 <div class="task-content">
                   <div class="task-name">{{task.name}}</div>
-                  <div class="task-assignee" *ngIf="task.assignee">
-                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  <div class="task-assignee" *ngIf="task.userNickname">
+                    <i class="fa-solid fa-user"></i> {{task.userNickname}}
                   </div>
                 </div>
               </div>
@@ -78,8 +78,8 @@
               >
                 <div class="task-content">
                   <div class="task-name">{{task.name}}</div>
-                  <div class="task-assignee" *ngIf="task.assignee">
-                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  <div class="task-assignee" *ngIf="task.userNickname">
+                    <i class="fa-solid fa-user"></i> {{task.userNickname}}
                   </div>
                 </div>
               </div>
@@ -103,8 +103,8 @@
               >
                 <div class="task-content">
                   <div class="task-name">{{task.name}}</div>
-                  <div class="task-assignee" *ngIf="task.assignee">
-                    <i class="fa-solid fa-user"></i> {{task.assignee}}
+                  <div class="task-assignee" *ngIf="task.userNickname">
+                    <i class="fa-solid fa-user"></i> {{task.userNickname}}
                   </div>
                 </div>
               </div>
@@ -265,6 +265,9 @@
             [(ngModel)]="taskForm.assignee"
             placeholder="correo@ejemplo.com"
           >
+          <small class="current-assignee" *ngIf="editingTask && editingTask.userEmail">
+            <i class="fa-solid fa-info-circle"></i> Asignado actualmente a: <strong>{{editingTask.userEmail}}</strong>
+          </small>
         </div>
 
         <div class="modal-actions">

@@ -26,13 +26,11 @@ export interface CreateTaskRequest {
 
 /**
  * Request para actualizar el estado de una tarea (drag & drop)
- * Endpoint: PUT /projects/tasks/state
+ * Endpoint: PUT /task/state
  * Se usa cuando se arrastra una tarea de un estado a otro
  */
 export interface UpdateTaskStateRequest {
-  projectid: number;
-  taskid: number;
-  name: string;
+  taskId: number;
   state: 'to be done' | 'in progress' | 'under review' | 'done';
 }
 
@@ -47,6 +45,16 @@ export interface UpdateTaskRequest {
   name: string;
   state: 'to be done' | 'in progress' | 'under review' | 'done';
   email?: string; // Email de la persona encargada
+}
+
+/**
+ * Request para eliminar una tarea
+ * Endpoint: DELETE /task/delete
+ * Se usa cuando se presiona "Eliminar" en el modal de editar tarea
+ */
+export interface DeleteTaskRequest {
+  projectId: number;
+  taskId: number;
 }
 
 /**

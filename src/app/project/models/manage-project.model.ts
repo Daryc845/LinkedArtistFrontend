@@ -1,7 +1,9 @@
 export interface Task {
   id: number;
   name: string;
-  assignee?: string;
+  assignee?: string;  // Nombre completo del usuario
+  userEmail?: string;  // Email del usuario
+  userNickname?: string;  // Alias/nickname del usuario
   state?: 'to be done' | 'in progress' | 'under review' | 'done';
 }
 

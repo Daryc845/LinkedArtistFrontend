@@ -8,7 +8,8 @@ import {
   UpdateProjectRequest, 
   CreateTaskRequest, 
   UpdateTaskStateRequest, 
-  UpdateTaskRequest, 
+  UpdateTaskRequest,
+  DeleteTaskRequest, 
   RemoveMemberRequest, 
   AcceptRequestRequest, 
   RejectRequestRequest 
@@ -65,10 +66,12 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Eliminar proyecto"
    */
   deleteProject(id: number): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-     return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/${id}/delete`);
-    
-    // ====== FIN RESPUESTA SIMULADA ======
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/${id}/delete`, { headers });
   }
 
   /**
@@ -84,13 +87,16 @@ export class ManageProjectService {
 
   /**
    * Actualizar estado de tarea (drag & drop)
-   * Endpoint: PUT /projects/tasks/state
+   * Endpoint: PUT /task/state
    * Se usa cuando se arrastra una tarea de un estado a otro
    */
   updateTaskState(request: UpdateTaskStateRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/state`, request);
-    
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<BaseResponse>(`${this.apiUrl}/task/state`, request, { headers });
   }
 
   /**
@@ -101,7 +107,23 @@ export class ManageProjectService {
   updateTask(request: UpdateTaskRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
     return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/update`, request);
+  }
 
+  /**
+   * Eliminar tarea
+   * Endpoint: DELETE /task/delete
+   * Se usa cuando se presiona "Eliminar" en el modal de editar tarea
+   */
+  deleteTask(request: DeleteTaskRequest): Observable<BaseResponse> {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/task/delete`, { 
+      headers,
+      body: request 
+    });
   }
 
   /**
