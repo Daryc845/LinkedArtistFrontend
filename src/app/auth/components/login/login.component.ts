@@ -65,7 +65,7 @@ export class LoginComponent {
 
     try {
       const response = await this.loginService.login(loginRequest).toPromise();
-      
+      console.log('📥 Respuesta del login:', response);
       if (response && response.code >= 200 && response.code < 300) {
         this.loginService.storeTokens(response.data.access_token, response.data.refresh_token);
         
