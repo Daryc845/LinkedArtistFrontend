@@ -8,7 +8,7 @@ import { LoginResponse } from '../models/responses/login.responses';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'https://partyst-api-gateway.onrender.com/auth/login';
+  private apiUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 

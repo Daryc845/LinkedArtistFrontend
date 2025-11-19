@@ -8,7 +8,7 @@ import { ProjectResponse, MembersResponse, BaseResponse } from '../models/respon
   providedIn: 'root'
 })
 export class WorkProjectService {
-  private apiUrl = 'https://partyst-api-gateway.onrender.com';
+  private apiUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 
