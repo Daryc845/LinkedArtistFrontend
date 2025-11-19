@@ -127,60 +127,35 @@ export class ManageProjectService {
   }
 
   /**
+   * Solicitar unirse a un proyecto
+   * Endpoint: POST /projects/join
+   * Se usa cuando un usuario quiere unirse a un proyecto
+   */
+  joinProject(projectId: number, userId: number, message?: string): Observable<BaseResponse> {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<BaseResponse>(
+      `${this.apiUrl}/projects/join`, 
+      { projectId, userId, message },
+      { headers }
+    );
+  }
+
+  /**
    * Obtener miembros del proyecto
    * Endpoint: GET /projects/{id}/members
    * Se usa cuando se presiona "Ver integrantes"
    */
   getMembers(projectId: number): Observable<MembersResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.get<MembersResponse>(`${this.apiUrl}/projects/${projectId}/members`);
-    
-    // ====== DATOS QUEMADOS - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({
-          success: true,
-          message: 'Members loaded successfully',
-          data: {
-            members: [
-              {
-                userid: 1,
-                name: 'Juan',
-                lastname: 'Pérez',
-                nickname: 'JuanArt',
-                email: 'juan@email.com',
-                isOwner: true
-              },
-              {
-                userid: 2,
-                name: 'María',
-                lastname: 'López',
-                nickname: 'MaríaDesign',
-                email: 'maria@email.com',
-                isOwner: false
-              },
-              {
-                userid: 3,
-                name: 'Carlos',
-                lastname: 'Ruiz',
-                email: 'carlos@email.com',
-                isOwner: false
-              },
-              {
-                userid: 4,
-                name: 'Ana',
-                lastname: 'García',
-                nickname: 'AnaIllustrator',
-                email: 'ana@email.com',
-                isOwner: false
-              }
-            ]
-          }
-        });
-        observer.complete();
-      }, 500);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     });
-    // ====== FIN DATOS QUEMADOS ======
+    return this.http.get<MembersResponse>(`${this.apiUrl}/projects/${projectId}/members`, { headers });
   }
 
   /**
@@ -200,37 +175,12 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Abrir centro de solicitudes"
    */
   getRequests(projectId: number): Observable<RequestsResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.get<RequestsResponse>(`${this.apiUrl}/projects/${projectId}/requests`);
-    
-    // ====== DATOS QUEMADOS - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({
-          success: true,
-          message: 'Requests loaded successfully',
-          data: {
-            requests: [
-              {
-                userid: 5,
-                name: 'Laura',
-                lastname: 'Hernández',
-                nickname: 'LauraArts',
-                email: 'laura@email.com'
-              },
-              {
-                userid: 6,
-                name: 'Pedro',
-                lastname: 'Gómez',
-                email: 'pedro@email.com'
-              }
-            ]
-          }
-        });
-        observer.complete();
-      }, 500);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     });
-    // ====== FIN DATOS QUEMADOS ======
+    return this.http.get<RequestsResponse>(`${this.apiUrl}/projects/${projectId}/requests`, { headers });
   }
 
   /**
@@ -239,9 +189,12 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Aceptar" en el centro de solicitudes
    */
   acceptRequest(request: AcceptRequestRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-     return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/accept`, request);
-    
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/accept`, request, { headers });
   }
 
   /**
@@ -250,8 +203,11 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Rechazar" en el centro de solicitudes
    */
   rejectRequest(request: RejectRequestRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/decline`, request);
-    
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/decline`, request, { headers });
   }
 }
