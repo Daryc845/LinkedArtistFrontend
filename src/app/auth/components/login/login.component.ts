@@ -65,7 +65,6 @@ export class LoginComponent {
 
     try {
       const response = await this.loginService.login(loginRequest).toPromise();
-      console.log('📥 Respuesta del login:', response);
       if (response && response.code >= 200 && response.code < 300) {
         this.loginService.storeTokens(response.data.access_token, response.data.refresh_token);
         
@@ -79,7 +78,6 @@ export class LoginComponent {
         this.showError(response?.message || 'Las credenciales de usuario no son válidas');
       }
     } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
       this.showError('Error al iniciar sesión. Por favor, intente nuevamente.');
     }
   }

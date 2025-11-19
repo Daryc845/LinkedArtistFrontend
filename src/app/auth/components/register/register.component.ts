@@ -105,7 +105,6 @@ export class RegisterComponent {
         this.showError('Error en el registro. Por favor, intente nuevamente.');
       }
     } catch (error) {
-      console.error('Error en el registro:', error);
       this.showError('Error al registrar. Por favor, intente nuevamente.');
     }
   }

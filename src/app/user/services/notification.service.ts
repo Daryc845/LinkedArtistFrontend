@@ -21,18 +21,11 @@ export class NotificationService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Obtener todas las notificaciones del usuario
-   * Endpoint: GET /notifications/{id}
-   * Se usa cuando se carga la página
-   * El userid se obtiene del localStorage
-   */
   getNotifications(userid: number): Observable<NotificationsResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.get<NotificationsResponse>(`${this.apiUrl}/notifications/${userid}`);
     
     // ====== DATOS QUEMADOS - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    console.log('📤 Obteniendo notificaciones para usuario:', userid);
     
     const mockNotifications: NotificationData[] = [
       {
@@ -136,8 +129,6 @@ export class NotificationService {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.patch<NotificationActionResponse>(`${this.apiUrl}/notifications/read`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    console.log('📤 Marcando notificación como leída:', request);
     
     return of({
       success: true,
@@ -155,8 +146,6 @@ export class NotificationService {
     // BACKEND: Descomentar cuando esté listo el backend
     // return this.http.delete<NotificationActionResponse>(`${this.apiUrl}/notifications`, { body: request });
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    console.log('📤 Eliminando notificación:', request);
     
     return of({
       success: true,
