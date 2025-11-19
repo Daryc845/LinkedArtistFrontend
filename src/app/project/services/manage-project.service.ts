@@ -25,7 +25,7 @@ import {
   providedIn: 'root'
 })
 export class ManageProjectService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = 'https://partyst-api-gateway.onrender.com';
 
   constructor(private http: HttpClient) { }
 
