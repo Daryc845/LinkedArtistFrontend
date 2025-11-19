@@ -1,4 +1,9 @@
 export interface CreateProjectResponse {
-  success: boolean;
+  code: number;
   message: string;
+  data: {
+    suces: boolean;
+    message: string;
+  };
+  
 }

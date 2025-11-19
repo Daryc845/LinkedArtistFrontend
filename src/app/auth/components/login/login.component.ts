@@ -66,8 +66,9 @@ export class LoginComponent {
     try {
       const response = await this.loginService.login(loginRequest).toPromise();
       
-      if (response && response.success) {
-        this.loginService.storeTokens(response.body.access_token, response.body.refresh_token);
+      if (response && response.code >= 200 && response.code < 300) {
+        console.log('Respuesta de login:', response);
+        this.loginService.storeTokens(response.data.access_token, response.data.refresh_token);
         
         this.snackBar.open('Ha iniciado sesión exitosamente', 'Cerrar', {
           duration: 3000,
@@ -76,7 +77,7 @@ export class LoginComponent {
 
         this.router.navigate(['../../project/dashboard']);
       } else {
-        this.showError('Las credenciales de usuario no son válidas');
+        this.showError(response?.message || 'Las credenciales de usuario no son válidas');
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);

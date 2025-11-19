@@ -10,6 +10,7 @@ import {
   ProjectJoinRequest, 
   ProjectBasicInfoRequest 
 } from '../../models/requests/dashboard.requests';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
   standalone: true,
@@ -30,39 +31,36 @@ export class DashboardComponent implements OnInit {
   viewMode: 'profile' | 'public' | 'registered' = 'public';
 
   availableSkills = [
-    { name: 'Ilustración', selected: false },
-    { name: 'Diseño Gráfico', selected: false },
-    { name: 'Diseño 3D', selected: false },
-    { name: 'Edición de Fotos', selected: false },
-    { name: 'Tipografía', selected: false },
-    { name: 'Animación 2D', selected: false },
-    { name: 'Animación 3D', selected: false },
-    { name: 'Modelado 3D', selected: false },
-    { name: 'Concept Art', selected: false }
+    { name: 'Dibujo', id: 1 , selected: false},
+    { name: 'Animacion', id: 2 , selected: false},
+    { name: 'Escultura', id: 3 , selected: false},
+    { name: 'Grabado', id: 4 , selected: false}
   ];
 
   categories = [
-    'Todos',
-    'Ilustración',
-    'Diseño Digital',
-    'Branding',
-    'Animación',
-    'Arte 3D',
-    'Edición y Fotografía'
+    'Stop Motion',
+    'Anime',
+    'Comic',
+    'Oleo',
+    'Pixel Art'
   ];
-
-  filteredProjects: Project[] = [];
-
-  // ID del usuario actual (obtener de localstorage)
-  currentUserId: number = 1; // TODO: Obtener del servicio de auth
 
   constructor(
     private router: Router, 
     private snackBar: MatSnackBar,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private tokenService: TokenService
   ) {}
 
+  filteredProjects: Project[] = [];
+
+  // ID del usuario actual (obtener de localstorage)
+  currentUserId!: number;// TODO: Obtener del servicio de auth
+
+  
+
   ngOnInit(): void {
+    this.currentUserId = this.tokenService.getUserId()!; 
     // Cargar proyectos inicialmente
     this.loadProjects();
   }
@@ -74,8 +72,8 @@ export class DashboardComponent implements OnInit {
   loadProjects(): void {
     const selectedSkills = this.availableSkills
       .filter(s => s.selected)
-      .map(s => ({ name: s.name }));
-
+      .map(s => ({ skillId: s.id, name: s.name }));
+    console.log('🎯 Skills seleccionados con IDs:', selectedSkills);
     // Mapear el viewMode al tipo del backend
     const typeMap = {
       'public': 'public' as const,
@@ -87,23 +85,23 @@ export class DashboardComponent implements OnInit {
       title: this.searchQuery,
       category: this.selectedCategory === 'Todos' ? '' : this.selectedCategory,
       type: typeMap[this.viewMode],
-      userid: this.currentUserId,
+      userId: this.currentUserId,
       skills: selectedSkills,
       active: true
     };
 
     this.dashboardService.filterProjects(request).subscribe({
       next: (response) => {
-        if (response.success) {
-          // Transformar la respuesta del backend al formato local
-          this.filteredProjects = response.data.projects.map(p => ({
-            id: p.projectid,
-            title: p.title,
-            description: p.description,
-            category: p.category,
-            skills: p.skills.map(s => s.name)
-          }));
-        }
+        console.log('📥 Respuesta recibida del backend:', response);
+        this.filteredProjects = (response.data?.projects ?? []).map(p => ({
+          id: p.projectId ?? 0,
+          title: p.name ?? 'Sin título',
+          description: p.description ?? 'Sin descripción',
+          category: p.category ?? 'Sin categoría',
+          skills: (p.skills ?? []).map((s: any) => s?.name ?? '')
+        }));
+
+      
       },
       error: (error) => {
         console.error('Error al cargar proyectos:', error);
@@ -171,20 +169,18 @@ export class DashboardComponent implements OnInit {
    * Endpoint: POST /projects/basic-info
    */
   openProjectDetail(project: Project): void {
-    const request: ProjectBasicInfoRequest = {
-      projectid: project.id
-    };
+    
 
-    this.dashboardService.getProjectBasicInfo(request).subscribe({
+    this.dashboardService.getProjectBasicInfo(project.id).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           const tasks = {
             todo: [] as string[],
             inProgress: [] as string[],
             review: [] as string[],
             done: [] as string[]
           };
-
+          console.log('📥 Detalles del proyecto recibidos:', response);
           response.data.tasks.forEach(task => {
             switch (task.state) {
               case 'to be done':
@@ -205,7 +201,7 @@ export class DashboardComponent implements OnInit {
           // Actualizar proyecto seleccionado con información completa
           this.selectedProject = {
             id: project.id,
-            title: response.data.title,
+            title: response.data.name,
             description: response.data.description,
             category: response.data.category,
             skills: response.data.skills.map(s => s.name),

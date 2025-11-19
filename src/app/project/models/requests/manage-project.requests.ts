@@ -6,11 +6,11 @@
  * Se usa cuando se presiona "Guardar cambios" en el panel principal
  */
 export interface UpdateProjectRequest {
-  projectid: number;
+  projectId: number;
   title: string;
   description: string;
-  category: string;
-  skills: Array<{ name: string }>;
+  categoryId: number;
+  skills: Array<{ skillId: number }>;
 }
 
 /**

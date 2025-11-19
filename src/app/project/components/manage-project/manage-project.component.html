@@ -196,8 +196,8 @@
                 required
               >
                 <option value="">Selecciona una categoría</option>
-                <option *ngFor="let category of categories" [value]="category">
-                  {{category}}
+                <option *ngFor="let category of availableCategories" [ngValue]="category.name">
+                  {{category.name}}
                 </option>
               </select>
             </div>

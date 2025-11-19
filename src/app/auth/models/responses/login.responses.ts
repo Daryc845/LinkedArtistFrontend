@@ -1,7 +1,7 @@
 export interface LoginResponse {
-  success: boolean;
+  code: number;
   message: string;
-  body: {
+  data: {
     access_token: string;
     refresh_token: string;
   };

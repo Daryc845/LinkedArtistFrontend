@@ -46,24 +46,18 @@ export class ManageProjectComponent implements OnInit {
   projectId: number = 0;
 
   availableSkills = [
-    { name: 'Ilustración', selected: false },
-    { name: 'Diseño Gráfico', selected: false },
-    { name: 'Diseño 3D', selected: false },
-    { name: 'Edición de Fotos', selected: false },
-    { name: 'Tipografía', selected: false },
-    { name: 'Animación 2D', selected: false },
-    { name: 'Animación 3D', selected: false },
-    { name: 'Modelado 3D', selected: false },
-    { name: 'Concept Art', selected: false }
+    { name: 'Dibujo', id: 1 , selected: false},
+    { name: 'Animacion', id: 2 , selected: false},
+    { name: 'Escultura', id: 3 , selected: false},
+    { name: 'Grabado', id: 4 , selected: false}
   ];
 
-  categories = [
-    'Ilustración',
-    'Diseño Digital',
-    'Branding',
-    'Animación',
-    'Arte 3D',
-    'Edición y Fotografía'
+  availableCategories = [
+    { categoryId: 4, name: "Stop Motion" },
+    { categoryId: 6, name: "Anime" },
+    { categoryId: 7, name: "Comic" },
+    { categoryId: 8, name: "Oleo" },
+    { categoryId: 5, name: "Pixel Art" }
   ];
 
   // Proyecto local - DATOS QUEMADOS (se cargarán del backend)
@@ -90,6 +84,8 @@ export class ManageProjectComponent implements OnInit {
     private manageProjectService: ManageProjectService
   ) {}
 
+  
+
   ngOnInit(): void {
     // Obtener el ID del proyecto desde la URL
     this.projectId = Number(this.route.snapshot.params['id']);
@@ -112,10 +108,11 @@ export class ManageProjectComponent implements OnInit {
   loadProject(id: number): void {
     this.manageProjectService.getProject(id).subscribe({
       next: (response) => {
-        if (response.success) {
+        console.log('📥 Proyecto recibido:', response);
+        if (response.code && response.code >= 200 && response.code < 300) {
           // Transformar la respuesta del backend al formato local
           this.project.id = id;
-          this.project.title = response.data.title;
+          this.project.title = response.data.name;
           this.project.description = response.data.description;
           this.project.category = response.data.category;
           this.project.skills = response.data.skills.map(s => s.name);
@@ -205,7 +202,7 @@ export class ManageProjectComponent implements OnInit {
     this.manageProjectService.getRequests(projectId).subscribe({
       next: (response) => {
         if (response.success) {
-          this.project.requests = response.body.requests.map(r => ({
+          this.project.requests = response.data.requests.map(r => ({
             id: r.userid,
             name: `${r.name} ${r.lastname}`,
             alias: r.nickname,
@@ -245,10 +242,10 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.deleteProject(this.projectId).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('El proyecto ha sido eliminado correctamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['success-snackbar']
+            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
           });
           
           setTimeout(() => {
@@ -349,10 +346,10 @@ export class ManageProjectComponent implements OnInit {
 
       this.manageProjectService.updateTaskState(request).subscribe({
         next: (response) => {
-          if (response.success) {
+          if (response.code && response.code >= 200 && response.code < 300) {
             this.snackBar.open('Tarea movida exitosamente', 'Cerrar', {
               duration: 2000,
-              panelClass: ['success-snackbar']
+              panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
             });
           }
         },
@@ -440,10 +437,10 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.createTask(request).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Tarea añadida exitosamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['success-snackbar']
+            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
           });
           
           this.loadProject(this.projectId);
@@ -503,14 +500,14 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.updateTask(request).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           // Actualizar localmente
           this.editingTask!.name = this.taskForm.name;
           this.editingTask!.assignee = this.taskForm.assignee || undefined;
 
           this.snackBar.open('Tarea actualizada exitosamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['success-snackbar']
+            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
           });
 
           this.closeTaskModal();
@@ -541,7 +538,7 @@ export class ManageProjectComponent implements OnInit {
         
         this.snackBar.open('Tarea eliminada exitosamente', 'Cerrar', {
           duration: 3000,
-          panelClass: ['success-snackbar']
+          panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
         });
 
         // TODO: Implementar endpoint de eliminación de tarea en el backend si existe
@@ -572,7 +569,7 @@ export class ManageProjectComponent implements OnInit {
 
       this.manageProjectService.removeMember(request).subscribe({
         next: (response) => {
-          if (response.success) {
+          if (response.code && response.code >= 200 && response.code < 300) {
             const index = this.project.members.indexOf(member);
             if (index > -1) {
               this.project.members.splice(index, 1);
@@ -580,7 +577,7 @@ export class ManageProjectComponent implements OnInit {
             
             this.snackBar.open('Integrante eliminado exitosamente', 'Cerrar', {
               duration: 3000,
-              panelClass: ['success-snackbar']
+              panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
             });
           }
         },
@@ -606,10 +603,10 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.acceptRequest(acceptRequest).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open(`${request.name} ha sido aceptado en el proyecto`, 'Cerrar', {
             duration: 2500,
-            panelClass: ['success-snackbar']
+            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
           });
 
           this.project.members.push({
@@ -645,7 +642,7 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.rejectRequest(rejectRequest).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open(`Solicitud de ${request.name} rechazada`, 'Cerrar', {
             duration: 2500,
             panelClass: ['warning-snackbar']
@@ -703,6 +700,16 @@ export class ManageProjectComponent implements OnInit {
     return true;
   }
 
+  getSkillIdByName(skillName: string): number | null {
+    const skill = this.availableSkills.find(s => s.name === skillName);
+    return skill ? skill.id : null;
+  }
+
+  getCategoryIdByName(categoryName: string): number | null {
+    const category = this.availableCategories.find(c => c.name === categoryName);
+    return category ? category.categoryId : null;
+  }
+
   /**
    * Actualizar información del proyecto
    * Endpoint: PUT /projects/update
@@ -710,16 +717,17 @@ export class ManageProjectComponent implements OnInit {
   validateUpdate(): void {
     if (this.onSubmit()) {
       const request: UpdateProjectRequest = {
-        projectid: this.projectId,
+        projectId: this.projectId,
         title: this.project.title,
         description: this.project.description,
-        category: this.project.category,
-        skills: this.project.skills.map(s => ({ name: s }))
+        categoryId: this.getCategoryIdByName(this.project.category)!,
+        skills: this.project.skills.map(s => ({ skillId: this.getSkillIdByName(s)! }))
       };
 
       this.manageProjectService.updateProject(request).subscribe({
         next: (response) => {
-          if (response.success) {
+          
+          if (response.code && response.code >= 200 && response.code < 300) {
             this.snackBar.open('Proyecto actualizado exitosamente', 'Cerrar', {
               duration: 3000,
               panelClass: ['success-snackbar']

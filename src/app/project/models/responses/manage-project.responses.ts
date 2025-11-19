@@ -4,7 +4,7 @@
  * Respuesta base para operaciones simples
  */
 export interface BaseResponse {
-  success: boolean;
+  code: number;
   message: string;
 }
 
@@ -25,14 +25,16 @@ export interface TaskUser {
 export interface TaskResponse {
   name: string;
   state: 'to be done' | 'in progress' | 'under review' | 'done';
-  user?: TaskUser;
+  userId?: number;
 }
 
 /**
  * Información completa del proyecto desde el backend
  */
 export interface ProjectData {
-  title: string;
+  projectId: number;
+  name: string;
+  users: any[];
   description: string;
   category: string;
   skills: Array<{ name: string }>;
@@ -45,7 +47,7 @@ export interface ProjectData {
  * Se usa cuando se carga la página según el id de la URL
  */
 export interface ProjectResponse {
-  success: boolean;
+  code: number;
   message: string;
   data: ProjectData;
 }
@@ -94,7 +96,7 @@ export interface JoinRequest {
 export interface RequestsResponse {
   success: boolean;
   message: string;
-  body: {
+  data: {
     requests: JoinRequest[];
   };
 }

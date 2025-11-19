@@ -10,8 +10,8 @@ export interface ProjectFilterRequest {
   title: string;
   category: string;
   type: 'public' | 'profile' | 'registered';
-  userid: number;
-  skills: Array<{ name: string }>;
+  userId: number;
+  skills: Array<{ skillId: number; name: string }>;
   active: boolean;
 }
 

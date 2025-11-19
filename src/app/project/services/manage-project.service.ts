@@ -2,6 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { 
   UpdateProjectRequest, 
@@ -23,7 +24,7 @@ import {
   providedIn: 'root'
 })
 export class ManageProjectService {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 
@@ -33,76 +34,13 @@ export class ManageProjectService {
    * Se usa cuando se carga la página según el id de la URL /project/manage/{id}
    */
   getProject(id: number): Observable<ProjectResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.get<ProjectResponse>(`${this.apiUrl}/projects/${id}`);
-    
-    // ====== PROYECTO QUEMADO - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({
-          success: true,
-          message: 'Project loaded successfully',
-          data: {
-            title: 'Colección de Ilustraciones Experimentales',
-            description: 'Proyecto artístico que busca crear una colección de ilustraciones con técnicas experimentales.',
-            category: 'Ilustración',
-            skills: [
-              { name: 'Ilustración' },
-              { name: 'Concept Art' },
-              { name: 'Diseño Gráfico' }
-            ],
-            tasks: [
-              {
-                name: 'Definir estilo visual',
-                state: 'to be done',
-                user: {
-                  userid: 2,
-                  name: 'María',
-                  lastname: 'López',
-                  nickname: 'MaríaDesign',
-                  email: 'maria@email.com'
-                }
-              },
-              {
-                name: 'Crear moodboard',
-                state: 'to be done'
-              },
-              {
-                name: 'Bocetos iniciales',
-                state: 'in progress',
-                user: {
-                  userid: 3,
-                  name: 'Carlos',
-                  lastname: 'Ruiz',
-                  email: 'carlos@email.com'
-                }
-              },
-              {
-                name: 'Revisión de composición',
-                state: 'under review'
-              },
-              {
-                name: 'Reunión inicial',
-                state: 'done',
-                user: {
-                  userid: 4,
-                  name: 'Ana',
-                  lastname: 'García',
-                  nickname: 'AnaIllustrator',
-                  email: 'ana@email.com'
-                }
-              },
-              {
-                name: 'Referencias recopiladas',
-                state: 'done'
-              }
-            ]
-          }
-        });
-        observer.complete();
-      }, 500);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     });
-    // ====== FIN PROYECTO QUEMADO ======
+    // BACKEND: Descomentar cuando esté listo el backend
+    return this.http.get<ProjectResponse>(`${this.apiUrl}/projects/${id}`, { headers } );
   }
 
   /**
@@ -111,17 +49,14 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Guardar cambios" en el panel principal
    */
   updateProject(request: UpdateProjectRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.put<BaseResponse>(`${this.apiUrl}/projects/update`, request);
-    
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Project updated successfully' });
-        observer.complete();
-      }, 500);
+    console.log('📤 Enviando solicitud de actualización de proyecto:', request);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     });
-    // ====== FIN RESPUESTA SIMULADA ======
+    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/update`, request, { headers } );
+    
   }
 
   /**
@@ -131,15 +66,8 @@ export class ManageProjectService {
    */
   deleteProject(id: number): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/${id}/delete`);
+     return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/${id}/delete`);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Project deleted successfully' });
-        observer.complete();
-      }, 500);
-    });
     // ====== FIN RESPUESTA SIMULADA ======
   }
 
@@ -150,16 +78,8 @@ export class ManageProjectService {
    */
   createTask(request: CreateTaskRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.post<BaseResponse>(`${this.apiUrl}/projects/tasks/create`, request);
+    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/tasks/create`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Task created successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 
   /**
@@ -169,16 +89,8 @@ export class ManageProjectService {
    */
   updateTaskState(request: UpdateTaskStateRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/state`, request);
+    return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/state`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Task state updated successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 
   /**
@@ -188,16 +100,8 @@ export class ManageProjectService {
    */
   updateTask(request: UpdateTaskRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/update`, request);
-    
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Task updated successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
+    return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/update`, request);
+
   }
 
   /**
@@ -264,16 +168,8 @@ export class ManageProjectService {
    */
   removeMember(request: RemoveMemberRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/member`, { body: request });
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/member`, { body: request });
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Member removed successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 
   /**
@@ -291,7 +187,7 @@ export class ManageProjectService {
         observer.next({
           success: true,
           message: 'Requests loaded successfully',
-          body: {
+          data: {
             requests: [
               {
                 userid: 5,
@@ -322,16 +218,8 @@ export class ManageProjectService {
    */
   acceptRequest(request: AcceptRequestRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/accept`, request);
+     return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/accept`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Request accepted successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 
   /**
@@ -341,15 +229,7 @@ export class ManageProjectService {
    */
   rejectRequest(request: RejectRequestRequest): Observable<BaseResponse> {
     // BACKEND: Descomentar cuando esté listo el backend
-    // return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/decline`, request);
+    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/decline`, request);
     
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, message: 'Request rejected successfully' });
-        observer.complete();
-      }, 500);
-    });
-    // ====== FIN RESPUESTA SIMULADA ======
   }
 }

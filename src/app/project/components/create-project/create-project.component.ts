@@ -7,6 +7,7 @@ import { ProjectService } from '../../services/create-project.service';
 import { CreateProjectRequest } from '../../models/requests/create-project.requests';
 import { CreateProjectResponse } from '../../models/responses/create-project.responses';
 import { Project, Task } from '../../models/create-project.model';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
   standalone: true,
@@ -26,28 +27,33 @@ export class CreateProjectComponent {
   project: Project = {
     title: '',
     description: '',
-    category: '',
+    categoryId: 0,
     skills: [] as string[],
     tasks: [] as Task[]
   };
 
-  availableSkills: string[] = [
-    'Ilustración',
-    'Diseño Gráfico',
-    'Diseño 3D',
-    'Edición de Fotos',
-    'Tipografía',
-    'Animación 2D',
-    'Animación 3D',
-    'Modelado 3D',
-    'Concept Art'
+  availableSkills: { name: string, id: number }[] = [
+    { name: 'Dibujo', id: 1 },
+    { name: 'Pintura', id: 2 },
+    { name: 'Animacion', id: 3 },
+    { name: 'Escultura', id: 4 },
+    { name: 'Grabado', id: 5 }
   ];
+
+  availableCategories = [
+  { categoryId: 4, name: "Stop Motion" },
+  { categoryId: 6, name: "Anime" },
+  { categoryId: 7, name: "Comic" },
+  { categoryId: 8, name: "Oleo" },
+  { categoryId: 5, name: "Pixel Art" }
+];
 
   constructor(
     private router: Router, 
     private route: ActivatedRoute, 
     private snackBar: MatSnackBar,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private tokenService: TokenService
   ) {}
 
   toggleSkillsDropdown(): void {
@@ -113,7 +119,7 @@ export class CreateProjectComponent {
       return false;
     }
 
-    if (!this.project.category) {
+    if (!this.project.categoryId || this.project.categoryId === 0) {
       this.snackBar.open('Por favor selecciona una categoría', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
@@ -132,27 +138,36 @@ export class CreateProjectComponent {
     return true;
   }
 
+  private getSkillIdByName(skillName: string): number | null {
+    const skill = this.availableSkills.find(s => s.name === skillName);
+    return skill ? skill.id : null;
+  }
+
   validateCreate(): void {
     if (this.validateForm()) {
+      
       // Preparar datos para el request según el endpoint
       const createProjectRequest: CreateProjectRequest = {
         title: this.project.title,
-        category: this.project.category,
-        userId: 'current-user-id', // Aquí se obtiene el id del usuario actual
-        skills: this.project.skills.map(skill => ({ name: skill })),
-        initialTasks: this.project.tasks.map(task => ({ name: task.name }))
+        categoryId: this.project.categoryId,
+        description: this.project.description,
+        userId: this.tokenService.getUserId()!, 
+        skills: this.project.skills.map(skill => ({ skillId: this.getSkillIdByName(skill)! })),
+        tasks: this.project.tasks.map(task => ({ name: task.name }))
       };
 
+      console.log("PROJECT ACTUAL:", this.project);
       // Llamar al servicio para crear el proyecto
       this.projectService.createProject(createProjectRequest).subscribe({
         next: (response: CreateProjectResponse) => {
-          if (response.success) {
+          if (response && response.code >= 200 && response.code < 300) {
             this.snackBar.open('Proyecto creado exitosamente', 'Cerrar', {
               duration: 3000,
               panelClass: ['success-snackbar']
             });
             this.router.navigate(['../dashboard'], { relativeTo: this.route });
           } else {
+            console.error('Error creating project:', response.data);
             this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
               duration: 5000,
               panelClass: ['error-snackbar']

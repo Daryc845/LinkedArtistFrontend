@@ -91,8 +91,8 @@ export class RegisterComponent {
     try {
       const response = await this.registerService.register(registerRequest).toPromise();
       
-      if (response && response.success) {
-        this.registerService.storeTokens(response.body.access_token, response.body.refresh_token);
+      if (response && response.code >= 200 && response.code < 300) {
+        this.registerService.storeTokens(response.data.access_token, response.data.refresh_token);
         
         this.snackBar.open('Se ha registrado exitosamente', 'Cerrar', {
           duration: 3000,

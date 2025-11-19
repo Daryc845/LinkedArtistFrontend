@@ -4,23 +4,21 @@
  * Información básica de un proyecto en la lista
  */
 export interface ProjectBasic {
-  projectid: number;
-  title: string;
+  projectId: number;
+  name: string;
   description: string;
   category: string;
-  skills: Array<{ name: string }>;
+  skills?: Array<{ name: string }>;
 }
 
-/**
- * Respuesta al filtrar proyectos
- * Endpoint: POST /projects/filter
- */
+export interface ProjectListWrapper {
+  projects: ProjectBasic[];
+}
+
 export interface ProjectListResponse {
-  success: boolean;
+  code: number;
   message: string;
-  data: {
-    projects: ProjectBasic[];
-  };
+  data: ProjectListWrapper;
 }
 
 /**
@@ -44,7 +42,8 @@ export interface TaskBasic {
  * Información detallada de un proyecto
  */
 export interface ProjectDetail {
-  title: string;
+  projectId: number;
+  name: string;
   description: string;
   category: string;
   skills: Array<{ name: string }>;
@@ -56,7 +55,7 @@ export interface ProjectDetail {
  * Endpoint: POST /projects/basic-info
  */
 export interface ProjectBasicInfoResponse {
-  success: boolean;
+  code: number;
   message: string;
   data: ProjectDetail;
 }

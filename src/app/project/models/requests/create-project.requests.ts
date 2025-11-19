@@ -1,7 +1,8 @@
 export interface CreateProjectRequest {
   title: string;
-  category: string;
-  userId: string;
-  skills: { name: string }[];
-  initialTasks: { name: string }[];
+  categoryId: number;
+  description: string;
+  userId: number;
+  skills: { skillId: number }[];
+  tasks: { name: string }[];
 }
