@@ -25,11 +25,6 @@ export class DashboardService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Filtrar proyectos según habilidades, categoría y tipo de vista
-   * Endpoint: POST /projects/filter
-   * Se usa cuando: se escribe en búsqueda, se cambia categoría, se cambian habilidades o se cambia vista
-   */
   filterProjects(request: ProjectFilterRequest): Observable<ProjectListResponse> {
     const token = localStorage.getItem('access_token');
     
@@ -37,15 +32,9 @@ export class DashboardService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
-    // BACKEND: Descomentar cuando esté listo el backend
      return this.http.post<ProjectListResponse>(`${this.apiUrl}/projects/filter`, request, { headers });
   }
 
-  /**
-   * Enviar solicitud para unirse a un proyecto
-   * Endpoint: POST /projects/join
-   * Se usa cuando se presiona "Solicitar unirse" en el modal
-   */
   joinProject(request: ProjectJoinRequest): Observable<ProjectJoinResponse> {
     const token = localStorage.getItem('access_token');
 
@@ -57,11 +46,6 @@ export class DashboardService {
     return this.http.post<ProjectJoinResponse>(`${this.apiUrl}/projects/join`, request, { headers } );
   }
 
-  /**
-   * Obtener información básica de un proyecto y sus tareas
-   * Endpoint: POST /projects/basic-info
-   * Se usa cuando se presiona sobre un proyecto para ver detalles
-   */
   getProjectBasicInfo(projectId: number): Observable<ProjectBasicInfoResponse> {
     const token = localStorage.getItem('access_token');
 

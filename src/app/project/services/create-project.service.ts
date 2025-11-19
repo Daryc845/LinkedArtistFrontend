@@ -16,10 +16,9 @@ export class ProjectService {
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
   createProject(projectData: CreateProjectRequest): Observable<CreateProjectResponse> {
-    // BACKEND CREATE PROJECT LOGIC HERE
     console.log('📤 Enviando solicitud de creación de proyecto:', projectData);
     const token = localStorage.getItem('access_token');
-    console.log('🔍 Token para project.create:', token); // DEBUG
+    console.log('🔍 Token para project.create:', token);
     
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
