@@ -84,7 +84,6 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.filterProjects(request).subscribe({
       next: (response) => {
-        console.log('📥 Respuesta recibida del backend:', response);
         this.filteredProjects = (response.data?.projects ?? []).map(p => ({
           id: p.projectId ?? 0,
           title: p.name ?? 'Sin título',
@@ -96,7 +95,6 @@ export class DashboardComponent implements OnInit {
       
       },
       error: (error) => {
-        console.error('Error al cargar proyectos:', error);
         this.snackBar.open('Error al cargar los proyectos', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
@@ -147,7 +145,6 @@ export class DashboardComponent implements OnInit {
             review: [] as any[],
             done: [] as any[]
           };
-          console.log('📥 Detalles del proyecto recibidos:', response);
           response.data.tasks.forEach(task => {
             const taskInfo = {
               name: task.name,
@@ -184,7 +181,6 @@ export class DashboardComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al cargar detalles del proyecto:', error);
         this.snackBar.open('Error al cargar los detalles', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
@@ -207,7 +203,6 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.joinProject(request).subscribe({
       next: (response) => {
-        console.log('📥 Respuesta de solicitud de unión:', response);
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Solicitud enviada correctamente', 'Cerrar', {
             duration: 3000,

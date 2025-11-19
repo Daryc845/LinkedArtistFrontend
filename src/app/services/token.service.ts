@@ -13,7 +13,6 @@ export class TokenService {
   decodeToken(token: string): any {
     try {
       const payload = token.split('.')[1];
-      // Decodificar base64 URL safe
       const decodedPayload = atob(this.base64UrlDecode(payload));
       return JSON.parse(decodedPayload);
     } catch (error) {
@@ -38,29 +37,24 @@ export class TokenService {
     return output;
   }
 
-  // Obtener el userId desde el token - ¡ESTA ES LA CLAVE!
   getUserId(): number | null {
     const token = this.getToken();
     if (!token) {
-      console.log('❌ No token found');
+      console.log('No token found');
       return null;
     }
 
     const decoded = this.decodeToken(token);
-    console.log('🔓 Token decodificado completo:', decoded); // DEBUG
     
-    // El userId está en el campo "jti" (JWT ID)
     if (decoded?.jti) {
       const userId = Number(decoded.jti);
-      console.log('✅ UserId obtenido del token:', userId);
       return userId;
     }
     
-    console.log('❌ No se encontró jti en el token');
+    console.log('No se encontró jti en el token');
     return null;
   }
 
-  // También puedes obtener otros datos del token
   getUserEmail(): string | null {
     const token = this.getToken();
     if (!token) return null;
