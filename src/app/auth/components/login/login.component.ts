@@ -67,7 +67,6 @@ export class LoginComponent {
       const response = await this.loginService.login(loginRequest).toPromise();
       
       if (response && response.code >= 200 && response.code < 300) {
-        console.log('Respuesta de login:', response);
         this.loginService.storeTokens(response.data.access_token, response.data.refresh_token);
         
         this.snackBar.open('Ha iniciado sesión exitosamente', 'Cerrar', {

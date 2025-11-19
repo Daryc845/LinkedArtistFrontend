@@ -54,27 +54,19 @@ export class DashboardComponent implements OnInit {
 
   filteredProjects: Project[] = [];
 
-  // ID del usuario actual (obtener de localstorage)
   currentUserId!: number;// TODO: Obtener del servicio de auth
 
   
 
   ngOnInit(): void {
     this.currentUserId = this.tokenService.getUserId()!; 
-    // Cargar proyectos inicialmente
     this.loadProjects();
   }
 
-  /**
-   * Cargar proyectos desde el backend según filtros actuales
-   * Endpoint: POST /projects/filter
-   */
   loadProjects(): void {
     const selectedSkills = this.availableSkills
       .filter(s => s.selected)
       .map(s => ({ skillId: s.id, name: s.name }));
-    console.log('🎯 Skills seleccionados con IDs:', selectedSkills);
-    // Mapear el viewMode al tipo del backend
     const typeMap = {
       'public': 'public' as const,
       'profile': 'profile' as const,
@@ -113,17 +105,11 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  /**
-   * Manejar cambios en el modo de vista
-   */
   changeViewMode(mode: 'profile' | 'public' | 'registered'): void {
     this.viewMode = mode;
     this.loadProjects();
   }
 
-  /**
-   * Toggle dropdown de habilidades
-   */
   toggleSkillsDropdown(): void {
     this.showSkillsDropdown = !this.showSkillsDropdown;
     if (this.showSkillsDropdown) {
@@ -131,9 +117,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /**
-   * Toggle dropdown de categorías
-   */
   toggleCategoryDropdown(): void {
     this.showCategoryDropdown = !this.showCategoryDropdown;
     if (this.showCategoryDropdown) {
@@ -141,36 +124,20 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /**
-   * Manejar búsqueda por texto
-   * Se ejecuta cada vez que se presiona una tecla
-   */
   onSearch(): void {
     this.loadProjects();
   }
 
-  /**
-   * Manejar cambio de categoría
-   */
   onCategoryChange(): void {
     this.loadProjects();
     this.showCategoryDropdown = false;
   }
 
-  /**
-   * Manejar cambio de habilidades
-   */
   onSkillsChange(): void {
     this.loadProjects();
   }
 
-  /**
-   * Abrir modal de detalle del proyecto
-   * Endpoint: POST /projects/basic-info
-   */
   openProjectDetail(project: Project): void {
-    
-
     this.dashboardService.getProjectBasicInfo(project.id).subscribe({
       next: (response) => {
         if (response.code && response.code >= 200 && response.code < 300) {
@@ -226,17 +193,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  /**
-   * Cerrar modal de detalle
-   */
   closeProjectDetail(): void {
     this.selectedProject = null;
   }
 
-  /**
-   * Solicitar unirse al proyecto
-   * Endpoint: POST /projects/join
-   */
   requestJoin(): void {
     if (!this.selectedProject) return;
 

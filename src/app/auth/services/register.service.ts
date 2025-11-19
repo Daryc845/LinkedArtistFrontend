@@ -16,13 +16,11 @@ export class RegisterService {
     return this.http.post<RegisterResponse>(this.apiUrl, registerData);
   }
 
-  // Método para almacenar tokens en localStorage
   storeTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem('access_token', accessToken);
     localStorage.setItem('refresh_token', refreshToken);
   }
 
-  // Método para limpiar tokens
   clearTokens(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
