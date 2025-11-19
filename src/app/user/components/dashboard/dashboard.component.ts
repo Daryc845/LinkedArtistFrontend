@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DashboardService } from '../../services/dashboard.service';
 import { UpdateUserRequest } from '../../models/requests/dashboard.requests';
 import { User } from '../../models/dashboard.model';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
   standalone: true,
@@ -20,7 +21,7 @@ export class UserDashboardComponent implements OnInit {
   showSkillsDropdown: boolean = false;
 
   // ID del usuario desde localStorage (simulado)
-  userId: number = 1; // En producción, obtener del token/localStorage
+  userId: number  = 0; // En producción, obtener del token/localStorage
 
   user: User = {
     id: 1,
@@ -49,10 +50,12 @@ export class UserDashboardComponent implements OnInit {
   constructor(
     private router: Router, 
     private snackBar: MatSnackBar,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private tokenService: TokenService
   ) {}
 
   ngOnInit(): void {
+    this.userId = this.tokenService.getUserId()!;
     this.loadUser();
   }
 
@@ -63,7 +66,8 @@ export class UserDashboardComponent implements OnInit {
   loadUser(): void {
     this.dashboardService.getUser(this.userId).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
+        console.log('Respuesta del API al cargar usuario:', response);
+        if (response.code  && response.data) {
           this.mapApiResponseToUser(response.data);
         } else {
           this.snackBar.open('Error al cargar los datos del usuario', 'Cerrar', {
@@ -86,14 +90,18 @@ export class UserDashboardComponent implements OnInit {
    * Mapear respuesta del API al modelo local
    */
   private mapApiResponseToUser(apiData: any): void {
-    this.user.name = apiData.name;
-    this.user.lastName = apiData.lastname;
-    this.user.alias = apiData.nickname || '';
-    this.user.phone = apiData.cellphone;
-    this.user.email = apiData.email;
-    this.user.password = ''; // No mostrar la contraseña real
-    this.user.skills = apiData.skills.map((skill: any) => skill.name);
-    this.user.bio = apiData.biography;
+    console.log('🔄 Mapeando datos del API:', apiData);
+  
+  this.user.name = apiData.name || '';
+  this.user.lastName = apiData.lastname || '';
+  this.user.alias = apiData.nickname || '';
+  this.user.phone = apiData.cellphone || '';
+  this.user.email = apiData.email || '';
+  this.user.password = ''; // No mostrar la contraseña real
+  this.user.skills = apiData.skills ? apiData.skills.map((skill: any) => skill.name) : [];
+  this.user.bio = apiData.biography || '';
+  
+  console.log('✅ Usuario mapeado:', this.user);
   }
 
   toggleSkillsDropdown(): void {
@@ -193,6 +201,7 @@ export class UserDashboardComponent implements OnInit {
         lastname: this.user.lastName,
         nickname: this.user.alias || undefined,
         cellphone: this.user.phone,
+        email: this.user.email,
         password: this.user.password || undefined,
         skills: this.user.skills.map(skill => ({ name: skill })),
         biography: this.user.bio
@@ -200,7 +209,7 @@ export class UserDashboardComponent implements OnInit {
 
       this.dashboardService.updateUser(updateRequest).subscribe({
         next: (response) => {
-          if (response.success) {
+          if (response.code && response.code >= 200 && response.code < 300) {
             this.snackBar.open('Perfil actualizado exitosamente', 'Cerrar', {
               duration: 3000,
               panelClass: ['success-snackbar']
@@ -250,7 +259,7 @@ export class UserDashboardComponent implements OnInit {
 
     this.dashboardService.deleteUser(this.userId).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Tu cuenta ha sido eliminada exitosamente', 'Cerrar', {
             duration: 3000,
             panelClass: ['success-snackbar']
@@ -263,7 +272,7 @@ export class UserDashboardComponent implements OnInit {
             this.router.navigate(['/auth/login']);
           }, 1000);
         } else {
-          this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
+          this.snackBar.open(`Error: ` + `No puede eliminar la cuenta mientras tenga proyectos activos`, 'Cerrar', {
             duration: 5000,
             panelClass: ['error-snackbar']
           });

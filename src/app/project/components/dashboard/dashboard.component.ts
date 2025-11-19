@@ -241,15 +241,22 @@ export class DashboardComponent implements OnInit {
     if (!this.selectedProject) return;
 
     const request: ProjectJoinRequest = {
-      projectid: this.selectedProject.id
+      projectId: this.selectedProject.id,
+      userId: this.tokenService.getUserId()!
     };
 
     this.dashboardService.joinProject(request).subscribe({
       next: (response) => {
-        if (response.success) {
+        console.log('📥 Respuesta de solicitud de unión:', response);
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Solicitud enviada correctamente', 'Cerrar', {
             duration: 3000,
             panelClass: ['success-snackbar']
+          });
+        }else{
+          this.snackBar.open('La solicitud ya fue enviada', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['warning-snackbar']
           });
         }
       },

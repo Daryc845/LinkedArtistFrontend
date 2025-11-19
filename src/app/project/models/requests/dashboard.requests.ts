@@ -21,7 +21,8 @@ export interface ProjectFilterRequest {
  * Se usa cuando se presiona "Solicitar unirse" en el modal de proyecto
  */
 export interface ProjectJoinRequest {
-  projectid: number;
+  projectId: number;
+  userId: number;
 }
 
 /**

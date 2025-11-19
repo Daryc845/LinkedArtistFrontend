@@ -47,17 +47,14 @@ export class DashboardService {
    * Se usa cuando se presiona "Solicitar unirse" en el modal
    */
   joinProject(request: ProjectJoinRequest): Observable<ProjectJoinResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.post<ProjectJoinResponse>(`${this.apiUrl}/projects/join`, request);
-    
-    // ====== RESPUESTA SIMULADA - ELIMINAR CUANDO SE CONECTE AL BACKEND ======
-    console.log('📤 Solicitud de unión enviada:', request);
-    
-    return of({
-      success: true,
-      message: 'Solicitud enviada correctamente'
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     });
-    // ====== FIN RESPUESTA SIMULADA ======
+
+    return this.http.post<ProjectJoinResponse>(`${this.apiUrl}/projects/join`, request, { headers } );
   }
 
   /**

@@ -41,12 +41,12 @@ export class CreateProjectComponent {
   ];
 
   availableCategories = [
-  { categoryId: 4, name: "Stop Motion" },
-  { categoryId: 6, name: "Anime" },
-  { categoryId: 7, name: "Comic" },
-  { categoryId: 8, name: "Oleo" },
-  { categoryId: 5, name: "Pixel Art" }
-];
+    { categoryId: 4, name: "Stop Motion" },
+    { categoryId: 6, name: "Anime" },
+    { categoryId: 7, name: "Comic" },
+    { categoryId: 8, name: "Oleo" },
+    { categoryId: 5, name: "Pixel Art" }
+  ];
 
   constructor(
     private router: Router, 

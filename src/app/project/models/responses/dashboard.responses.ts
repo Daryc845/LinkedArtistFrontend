@@ -26,7 +26,7 @@ export interface ProjectListResponse {
  * Endpoint: POST /projects/join
  */
 export interface ProjectJoinResponse {
-  success: boolean;
+  code: number;
   message: string;
 }
 
