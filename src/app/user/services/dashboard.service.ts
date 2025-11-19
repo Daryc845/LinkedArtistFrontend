@@ -9,15 +9,10 @@ import { HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost:8080'; // Ajusta según tu backend
+  private apiUrl = 'https://partyst-api-gateway.onrender.com'; 
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Obtener información del usuario actual
-   * Endpoint: GET /user/{id}
-   * Se usa cuando se carga la página
-   */
   getUser(id: number): Observable<UserResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -28,11 +23,6 @@ export class DashboardService {
     
   }
 
-  /**
-   * Actualizar perfil del usuario
-   * Endpoint: PUT /user/update
-   * Se usa cuando se presiona "Guardar cambios"
-   */
   updateUser(request: UpdateUserRequest): Observable<UpdateUserResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -42,11 +32,6 @@ export class DashboardService {
     return this.http.put<UpdateUserResponse>(`${this.apiUrl}/user/update`, request, { headers } );
   }
 
-  /**
-   * Eliminar cuenta de usuario
-   * Endpoint: DELETE /user/{id}/delete
-   * Se usa cuando se presiona "Eliminar cuenta"
-   */
   deleteUser(id: number): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({

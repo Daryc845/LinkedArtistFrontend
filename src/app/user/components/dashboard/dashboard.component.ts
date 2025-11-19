@@ -20,8 +20,8 @@ import { TokenService } from '../../../services/token.service';
 export class UserDashboardComponent implements OnInit {
   showSkillsDropdown: boolean = false;
 
-  // ID del usuario desde localStorage (simulado)
-  userId: number  = 0; // En producción, obtener del token/localStorage
+ 
+  userId: number  = 0; 
 
   user: User = {
     id: 1,
@@ -59,14 +59,9 @@ export class UserDashboardComponent implements OnInit {
     this.loadUser();
   }
 
-  /**
-   * Cargar datos del usuario desde el backend
-   * Endpoint: GET /user/{id}
-   */
   loadUser(): void {
     this.dashboardService.getUser(this.userId).subscribe({
       next: (response) => {
-        console.log('Respuesta del API al cargar usuario:', response);
         if (response.code  && response.data) {
           this.mapApiResponseToUser(response.data);
         } else {
@@ -86,22 +81,15 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  /**
-   * Mapear respuesta del API al modelo local
-   */
   private mapApiResponseToUser(apiData: any): void {
-    console.log('🔄 Mapeando datos del API:', apiData);
-  
   this.user.name = apiData.name || '';
   this.user.lastName = apiData.lastname || '';
   this.user.alias = apiData.nickname || '';
   this.user.phone = apiData.cellphone || '';
   this.user.email = apiData.email || '';
-  this.user.password = ''; // No mostrar la contraseña real
+  this.user.password = ''; 
   this.user.skills = apiData.skills ? apiData.skills.map((skill: any) => skill.name) : [];
   this.user.bio = apiData.biography || '';
-  
-  console.log('✅ Usuario mapeado:', this.user);
   }
 
   toggleSkillsDropdown(): void {
@@ -128,9 +116,6 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  /**
-   * Validar formulario antes de enviar
-   */
   private validateForm(): boolean {
     if (!this.user.name.trim() || !this.user.lastName.trim()) {
       this.snackBar.open('Por favor ingresa tus nombres y apellidos', 'Cerrar', {
@@ -184,10 +169,6 @@ export class UserDashboardComponent implements OnInit {
     return true;
   }
 
-  /**
-   * Actualizar perfil del usuario
-   * Endpoint: PUT /user/update
-   */
   validateUpdate(): void {
     if (this.validateForm()) {
       this.snackBar.open('Actualizando perfil...', 'Cerrar', {

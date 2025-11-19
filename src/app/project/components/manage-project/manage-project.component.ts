@@ -43,7 +43,6 @@ export class ManageProjectComponent implements OnInit {
     assignee: ''
   };
 
-  // ID del proyecto desde la URL
   projectId: number = 0;
 
   availableSkills = [
@@ -61,7 +60,6 @@ export class ManageProjectComponent implements OnInit {
     { categoryId: 5, name: "Pixel Art" }
   ];
 
-  // Proyecto local - DATOS QUEMADOS (se cargarán del backend)
   project: Project = {
     id: 1,
     title: '',
@@ -88,7 +86,6 @@ export class ManageProjectComponent implements OnInit {
   
 
   ngOnInit(): void {
-    // Obtener el ID del proyecto desde la URL
     this.projectId = Number(this.route.snapshot.params['id']);
     
     if (this.projectId) {
@@ -102,16 +99,10 @@ export class ManageProjectComponent implements OnInit {
     }
   }
 
-  /**
-   * Cargar proyecto desde el backend
-   * Endpoint: GET /projects/{id}
-   */
   loadProject(id: number): void {
     this.manageProjectService.getProject(id).subscribe({
       next: (response) => {
-        console.log('📥 Proyecto recibido:', response);
         if (response.code && response.code >= 200 && response.code < 300) {
-          // Transformar la respuesta del backend al formato local
           this.project.id = id;
           this.project.title = response.data.name;
           this.project.description = response.data.description;
@@ -120,7 +111,6 @@ export class ManageProjectComponent implements OnInit {
 
           this.organizeTasks(response.data.tasks);
 
-          // Cargar miembros y solicitudes
           this.loadMembers(id);
           this.loadRequests(id);
         }
@@ -184,10 +174,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Cargar miembros del proyecto
-   * Endpoint: GET /projects/{id}/members
-   */
   loadMembers(projectId: number): void {
     this.manageProjectService.getMembers(projectId).subscribe({
       next: (response) => {
@@ -207,10 +193,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Cargar solicitudes del proyecto
-   * Endpoint: GET /projects/{id}/requests
-   */
   loadRequests(projectId: number): void {
     this.manageProjectService.getRequests(projectId).subscribe({
       next: (response) => {
@@ -229,17 +211,10 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Navegar al perfil de un usuario
-   */
   validateVisitProfile(artistId: number): void {
     this.router.navigate([`/artist/${artistId}`]);
   }
 
-  /**
-   * Eliminar proyecto
-   * Endpoint: DELETE /projects/{id}/delete
-   */
   validateDelete(): void {
     const confirmDelete = confirm(
       "¿Estás seguro de que deseas eliminar el proyecto? Esta acción es irreversible."
@@ -339,9 +314,8 @@ export class ManageProjectComponent implements OnInit {
 
     const sourceIndex = this.project.tasks[sourceColumn].indexOf(this.draggedTask);
     if (sourceIndex > -1) {
-      const taskToMove = this.draggedTask; // Guardar referencia para usar después
+      const taskToMove = this.draggedTask; 
       
-      // Actualizar en el backend primero
       const stateMap = {
         'todo': 'to be done',
         'inProgress': 'in progress',
@@ -357,7 +331,6 @@ export class ManageProjectComponent implements OnInit {
       this.manageProjectService.updateTaskState(request).subscribe({
         next: (response) => {
           if (response.code && response.code >= 200 && response.code < 300) {
-            // Solo actualizar el UI si el backend confirma el cambio
             this.project.tasks[sourceColumn].splice(sourceIndex, 1);
             this.project.tasks[targetColumn].push(taskToMove);
             
@@ -421,10 +394,6 @@ export class ManageProjectComponent implements OnInit {
     this.showRequestsListModal = false;
   }
   
-  /**
-   * Validar y añadir tarea
-   * Endpoint: POST /projects/tasks/create
-   */
   validateAddTask(): void {
     if (!this.taskForm.name.trim()) {
       this.snackBar.open('Por favor ingresa el nombre de la tarea', 'Cerrar', {
@@ -473,10 +442,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Validar y actualizar tarea
-   * Endpoint: PUT /projects/tasks/update
-   */
   validateUpdateTask(): void {
     if (!this.taskForm.name.trim()) {
       this.snackBar.open('Por favor ingresa el nombre de la tarea', 'Cerrar', {
@@ -517,7 +482,6 @@ export class ManageProjectComponent implements OnInit {
     this.manageProjectService.updateTask(request).subscribe({
       next: (response) => {
         if (response.code && response.code >= 200 && response.code < 300) {
-          // Actualizar localmente
           this.editingTask!.name = this.taskForm.name;
           this.editingTask!.assignee = this.taskForm.assignee || undefined;
 
@@ -534,15 +498,10 @@ export class ManageProjectComponent implements OnInit {
           duration: 3000,
           panelClass: ['error-snackbar']
         });
-        console.error('Error updating task:', error);
       }
     });
   }
 
-  /**
-   * Confirmar y eliminar tarea
-   * Endpoint: DELETE /task/delete
-   */
   confirmDeleteTask(): void {
     if (!this.editingTask || !this.editingTaskColumn) return;
 
@@ -575,16 +534,11 @@ export class ManageProjectComponent implements OnInit {
             duration: 3000,
             panelClass: ['error-snackbar']
           });
-          console.error('Error deleting task:', error);
         }
       });
     }
   }
   
-  /**
-   * Eliminar miembro
-   * Endpoint: DELETE /projects/member
-   */
   removeMember(member: Member): void {
     if (member.isOwner) {
       this.snackBar.open('No puedes eliminar al propietario del proyecto', 'Cerrar', {
@@ -624,10 +578,7 @@ export class ManageProjectComponent implements OnInit {
       });
     }
   }
-  /**
-   * Aceptar solicitud
-   * Endpoint: POST /projects/requests/accept
-   */
+
   acceptRequest(request: Request): void {
     const acceptRequest: AcceptRequestRequest = {
       projectid: this.projectId,
@@ -663,10 +614,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Rechazar solicitud
-   * Endpoint: POST /projects/requests/decline
-   */
   rejectRequest(request: Request): void {
     const rejectRequest: RejectRequestRequest = {
       projectid: this.projectId,
@@ -694,9 +641,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
   
-  /**
-   * Validar formulario del proyecto
-   */
   onSubmit(): boolean {
     if (!this.project.title.trim()) {
       this.snackBar.open('Por favor ingresa un título para el proyecto', 'Cerrar', {
@@ -743,10 +687,6 @@ export class ManageProjectComponent implements OnInit {
     return category ? category.categoryId : null;
   }
 
-  /**
-   * Actualizar información del proyecto
-   * Endpoint: PUT /projects/update
-   */
   validateUpdate(): void {
     if (this.onSubmit()) {
       const request: UpdateProjectRequest = {
@@ -772,7 +712,6 @@ export class ManageProjectComponent implements OnInit {
             duration: 3000,
             panelClass: ['error-snackbar']
           });
-          console.error('Error updating project:', error);
         }
       });
     }
