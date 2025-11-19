@@ -21,7 +21,7 @@ import {
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'https://partyst-api-gateway.onrender.com';
+  private apiUrl = 'https://partyst-java-backend.onrender.com';
 
   constructor(private http: HttpClient) { }
 
