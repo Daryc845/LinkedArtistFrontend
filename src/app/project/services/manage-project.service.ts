@@ -80,8 +80,12 @@ export class ManageProjectService {
    * Se usa cuando se presiona "Añadir tarea"
    */
   createTask(request: CreateTaskRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.post<BaseResponse>(`${this.apiUrl}/projects/tasks/create`, request);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<BaseResponse>(`${this.apiUrl}/task/create`, request, { headers });
     
   }
 
