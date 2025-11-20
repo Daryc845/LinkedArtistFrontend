@@ -6,7 +6,6 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { 
   UpdateProjectRequest, 
-  CreateTaskRequest, 
   UpdateTaskStateRequest, 
   UpdateTaskRequest,
   DeleteTaskRequest, 
@@ -20,6 +19,7 @@ import {
   MembersResponse, 
   RequestsResponse,
 } from '../models/responses/manage-project.responses';
+import { CreateTaskRequest } from '../models/requests/task.requests';
 
 @Injectable({
   providedIn: 'root'
