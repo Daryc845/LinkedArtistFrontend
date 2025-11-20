@@ -35,15 +35,11 @@ export class DashboardComponent implements OnInit {
 
   // Habilidades disponibles
   availableSkills = [
-    { name: 'Ilustración', selected: false },
-    { name: 'Diseño Gráfico', selected: false },
-    { name: 'Diseño 3D', selected: false },
-    { name: 'Edición de Fotos', selected: false },
-    { name: 'Tipografía', selected: false },
-    { name: 'Animación 2D', selected: false },
-    { name: 'Animación 3D', selected: false },
-    { name: 'Modelado 3D', selected: false },
-    { name: 'Concept Art', selected: false }
+    { name: 'Dibujo', id: 1, selected: false },
+    { name: 'Pintura', id: 2, selected: false },
+    { name: 'Animacion', id: 3, selected: false },
+    { name: 'Escultura', id: 4, selected: false },
+    { name: 'Grabado', id: 5, selected: false }
   ];
 
   // Artistas filtrados que se muestran en pantalla
@@ -76,7 +72,7 @@ export class DashboardComponent implements OnInit {
     // Obtener habilidades seleccionadas
     const selectedSkills = this.availableSkills
       .filter(s => s.selected)
-      .map(s => ({ name: s.name }));
+      .map(s => ({ id: s.id }));
 
     // Construir request según el endpoint
     const request: ArtistFilterRequest = {
@@ -86,6 +82,7 @@ export class DashboardComponent implements OnInit {
 
     this.artistDashboardService.filterArtists(request).subscribe({
       next: (response) => {
+        console.log(response);
         if (response.success) {
           // Transformar la respuesta del backend al formato local
           this.filteredArtists = response.data.artists.map(artist => ({

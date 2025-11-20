@@ -237,20 +237,20 @@
   <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()">
     <div class="modal-content small" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>{{editingTask ? 'Editar tarea' : 'Añadir nueva tarea'}}</h3>
+        <h3>{{editingTask!.id != 0 ? 'Editar tarea' : 'Añadir nueva tarea'}}</h3>
         <button class="close-btn" (click)="closeTaskModal()">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <form class="modal-form" (ngSubmit)="editingTask ? validateUpdateTask() : validateAddTask()">
+      <form class="modal-form" (ngSubmit)="editingTask!.id != 0 ? validateUpdateTask() : validateAddTask()">
         <div class="form-group">
           <label for="taskName">Nombre de la tarea</label>
           <input 
             type="text" 
             id="taskName"
             name="taskName"
-            [(ngModel)]="taskForm.name"
+            [(ngModel)]="editingTask!.name"
             placeholder="Ej: Diseñar logo principal"
             required
           >
@@ -265,8 +265,8 @@
             [(ngModel)]="editingTask!.userEmail"
             placeholder="correo@ejemplo.com"
           >
-          <small class="current-assignee" *ngIf="editingTask && editingTask.userEmail">
-            <i class="fa-solid fa-info-circle"></i> Asignado actualmente a: <strong>{{editingTask.assignee}}</strong>
+          <small class="current-assignee" *ngIf="editingTask!.id != 0">
+            <i class="fa-solid fa-info-circle"></i> Asignado actualmente a: <strong>{{editingTask?.assignee}}</strong>
           </small>
         </div>
 
@@ -347,8 +347,8 @@
       </div>
 
       <div class="requests-list">
-
-        <div class="request-card" *ngFor="let req of project.requests" (click)="validateVisitProfile(req.id)">
+        <!--<div class="request-card" *ngFor="let req of project.requests" (click)="validateVisitProfile(req.id)">-->
+        <div class="request-card" *ngFor="let req of project.requests">
           
           <div class="request-info">
 

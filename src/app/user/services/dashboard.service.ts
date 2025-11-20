@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { UpdateUserRequest } from '../models/requests/dashboard.requests';
 import { UserResponse, UpdateUserResponse, BaseResponse } from '../models/responses/dashboard.responses';
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com'; 
+  private apiUrl = environment.prodUrl; 
 
   constructor(private http: HttpClient) { }
 

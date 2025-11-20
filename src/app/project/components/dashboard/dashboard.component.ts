@@ -5,10 +5,10 @@ import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardService } from '../../services/dashboard.service';
 import { Project } from '../../models/dashboard-project.model';
-import { 
-  ProjectFilterRequest, 
-  ProjectJoinRequest, 
-  ProjectBasicInfoRequest 
+import {
+  ProjectFilterRequest,
+  ProjectJoinRequest,
+  ProjectBasicInfoRequest
 } from '../../models/requests/dashboard.requests';
 import { TokenService } from '../../../services/token.service';
 
@@ -31,10 +31,11 @@ export class DashboardComponent implements OnInit {
   viewMode: 'profile' | 'public' | 'registered' = 'public';
 
   availableSkills = [
-    { name: 'Dibujo', id: 1 , selected: false},
-    { name: 'Animacion', id: 2 , selected: false},
-    { name: 'Escultura', id: 3 , selected: false},
-    { name: 'Grabado', id: 4 , selected: false}
+    { name: 'Dibujo', id: 1, selected: false },
+    { name: 'Pintura', id: 2, selected: false },
+    { name: 'Animacion', id: 3, selected: false },
+    { name: 'Escultura', id: 4, selected: false },
+    { name: 'Grabado', id: 5, selected: false }
   ];
 
   categories = [
@@ -46,20 +47,20 @@ export class DashboardComponent implements OnInit {
   ];
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private snackBar: MatSnackBar,
     private dashboardService: DashboardService,
     private tokenService: TokenService
-  ) {}
+  ) { }
 
   filteredProjects: Project[] = [];
 
   currentUserId!: number;// TODO: Obtener del servicio de auth
 
-  
+
 
   ngOnInit(): void {
-    this.currentUserId = this.tokenService.getUserId()!; 
+    this.currentUserId = this.tokenService.getUserId()!;
     this.loadProjects();
   }
 
@@ -92,7 +93,7 @@ export class DashboardComponent implements OnInit {
           skills: (p.skills ?? []).map((s: any) => s?.name ?? '')
         }));
 
-      
+
       },
       error: (error) => {
         this.snackBar.open('Error al cargar los proyectos', 'Cerrar', {
@@ -152,7 +153,7 @@ export class DashboardComponent implements OnInit {
               userName: task.userName,
               userLastname: task.userLastname
             };
-            
+
             switch (task.state) {
               case 'to be done':
                 tasks.todo.push(taskInfo);
@@ -208,7 +209,7 @@ export class DashboardComponent implements OnInit {
             duration: 3000,
             panelClass: ['success-snackbar']
           });
-        }else{
+        } else {
           this.snackBar.open('La solicitud ya fue enviada', 'Cerrar', {
             duration: 3000,
             panelClass: ['warning-snackbar']

@@ -70,7 +70,7 @@ export interface Member {
  * Se usa cuando se presiona "Ver integrantes"
  */
 export interface MembersResponse {
-  success: boolean;
+  code: number;
   message: string;
   data: {
     members: Member[];
@@ -86,6 +86,8 @@ export interface JoinRequest {
   lastname: string;
   nickname?: string;
   email: string;
+  message: string;
+  requestDate: String;
 }
 
 /**
@@ -94,7 +96,7 @@ export interface JoinRequest {
  * Se usa cuando se presiona "Abrir centro de solicitudes"
  */
 export interface RequestsResponse {
-  success: boolean;
+  code: number,
   message: string;
   data: {
     requests: JoinRequest[];

@@ -7,5 +7,5 @@
  */
 export interface ArtistFilterRequest {
   nickname: string;
-  skills: Array<{ name: string }>;
+  skills: Array<{ id: number }>;
 }

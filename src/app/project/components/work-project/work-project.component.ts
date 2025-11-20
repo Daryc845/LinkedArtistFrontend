@@ -1,11 +1,13 @@
+// components/work-project/work-project.component.ts
+
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { WorkProjectService } from '../../services/work-project.service';
-import { UpdateTaskStateRequest } from '../../models/requests/work-project.requests';
-import { Project, Task, Member } from '../../models/work-project.model';
+import { UpdateTaskStateRequest } from '../../models/requests/manage-project.requests';
+import { Project, Task, Member } from '../../models/manage-project.model';
 
 @Component({
   standalone: true,
@@ -16,14 +18,12 @@ import { Project, Task, Member } from '../../models/work-project.model';
   imports: [CommonModule, RouterModule, HttpClientModule],
 })
 export class WorkProjectComponent implements OnInit {
+  
   showMembersListModal: boolean = false;
   draggedTask: Task | null = null;
   draggedFromColumn: string = '';
-
-  // ID del proyecto desde la URL
   projectId: number = 0;
 
-  // Proyecto local - DATOS QUEMADOS (se cargarán del backend)
   project: Project = {
     id: 1,
     title: '',
@@ -36,7 +36,8 @@ export class WorkProjectComponent implements OnInit {
       review: [],
       done: []
     },
-    members: []
+    members: [],
+    requests: []
   };
 
   constructor(
@@ -47,7 +48,6 @@ export class WorkProjectComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener el ID del proyecto desde la URL
     this.projectId = Number(this.route.snapshot.params['id']);
     
     if (this.projectId) {
@@ -68,17 +68,14 @@ export class WorkProjectComponent implements OnInit {
   loadProject(id: number): void {
     this.workProjectService.getProject(id).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
-          // Transformar la respuesta del backend al formato local
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.project.id = id;
-          this.project.title = response.data.title;
+          this.project.title = response.data.name;
           this.project.description = response.data.description;
           this.project.category = response.data.category;
           this.project.skills = response.data.skills.map(s => s.name);
 
           this.organizeTasks(response.data.tasks);
-
-          // Cargar miembros
           this.loadMembers(id);
         }
       },
@@ -96,8 +93,6 @@ export class WorkProjectComponent implements OnInit {
    * Organizar tareas del backend en columnas
    */
   organizeTasks(tasks: any[]): void {
-    let taskId = 1;
-    
     this.project.tasks = {
       todo: [],
       inProgress: [],
@@ -107,11 +102,18 @@ export class WorkProjectComponent implements OnInit {
 
     tasks.forEach(task => {
       const localTask: Task = {
-        id: taskId++,
+        id: task.taskId,
         name: task.name,
-        assignee: task.user ? `${task.user.name} ${task.user.lastname}` : undefined,
-        state: task.state
+        assignee: undefined,
+        userEmail: undefined,
+        userNickname: undefined
       };
+
+      if (task.userEmail && task.userEmail !== 'Sin email') {
+        localTask.assignee = `${task.userName || ''} ${task.userLastname || ''}`.trim();
+        localTask.userEmail = task.userEmail;
+        localTask.userNickname = task.userName || 'Sin alias';
+      }
 
       switch (task.state) {
         case 'to be done':
@@ -137,9 +139,9 @@ export class WorkProjectComponent implements OnInit {
   loadMembers(projectId: number): void {
     this.workProjectService.getMembers(projectId).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.project.members = response.data.members.map(m => ({
-            id: m.userId,
+            id: m.userid,
             name: `${m.name} ${m.lastname}`,
             alias: m.nickname,
             email: m.email,
@@ -160,6 +162,8 @@ export class WorkProjectComponent implements OnInit {
     this.router.navigate([`/artist/${artistId}`]);
   }
 
+  // ========== DRAG AND DROP ==========
+  
   onDragStart(event: DragEvent, task: Task, column: string): void {
     this.draggedTask = task;
     this.draggedFromColumn = column;
@@ -177,6 +181,7 @@ export class WorkProjectComponent implements OnInit {
 
     const sourceColumn = this.draggedFromColumn as keyof Project['tasks'];
     
+    // Validaciones de movimiento (igual que manage-project)
     if (sourceColumn === 'todo' && targetColumn !== 'todo' && !this.draggedTask.assignee) {
       this.snackBar.open('No puedes mover una tarea sin encargado a otra columna', 'Cerrar', {
         duration: 3000,
@@ -197,64 +202,53 @@ export class WorkProjectComponent implements OnInit {
       return;
     }
 
-    if (sourceColumn === 'todo' && targetColumn === 'todo') {
-      const sourceIndex = this.project.tasks[sourceColumn].indexOf(this.draggedTask);
-      if (sourceIndex > -1) {
-        this.project.tasks[sourceColumn].splice(sourceIndex, 1);
-        this.project.tasks[targetColumn].push(this.draggedTask);
-      }
-      this.draggedTask = null;
-      this.draggedFromColumn = '';
-      return;
-    }
-
+    // Mover la tarea
     const sourceIndex = this.project.tasks[sourceColumn].indexOf(this.draggedTask);
     if (sourceIndex > -1) {
-      this.project.tasks[sourceColumn].splice(sourceIndex, 1);
-    }
+      const taskToMove = this.draggedTask;
+      
+      const stateMap = {
+        'todo': 'to be done',
+        'inProgress': 'in progress',
+        'review': 'under review',
+        'done': 'done'
+      };
 
-    this.project.tasks[targetColumn].push(this.draggedTask);
+      const request: UpdateTaskStateRequest = {
+        taskId: taskToMove.id,
+        state: stateMap[targetColumn] as any
+      };
 
-    // Actualizar en el backend
-    const stateMap: { [key: string]: 'to be done' | 'in progress' | 'under review' | 'done' } = {
-      'todo': 'to be done',
-      'inProgress': 'in progress',
-      'review': 'under review',
-      'done': 'done'
-    };
-
-    const request: UpdateTaskStateRequest = {
-      projectid: this.projectId,
-      taskid: this.draggedTask.id,
-      name: this.draggedTask.name,
-      state: stateMap[targetColumn]
-    };
-
-    this.workProjectService.updateTaskState(request).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.snackBar.open('Tarea movida exitosamente', 'Cerrar', {
-            duration: 2000,
-            panelClass: ['success-snackbar']
-          });
-        } else {
-          this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
-            duration: 5000,
+      this.workProjectService.updateTaskState(request).subscribe({
+        next: (response) => {
+          if (response.code && response.code >= 200 && response.code < 300) {
+            this.project.tasks[sourceColumn].splice(sourceIndex, 1);
+            this.project.tasks[targetColumn].push(taskToMove);
+            
+            this.snackBar.open('Tarea movida exitosamente', 'Cerrar', {
+              duration: 2000,
+              panelClass: ['success-snackbar']
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error updating task state:', error);
+          this.snackBar.open('Error al mover la tarea', 'Cerrar', {
+            duration: 3000,
             panelClass: ['error-snackbar']
           });
+          // Revertir cambio
+          this.loadProject(this.projectId);
         }
-      },
-      error: (error) => {
-        console.error('Error updating task state:', error);
-        // Revertir el cambio si falla
-        this.loadProject(this.projectId);
-      }
-    });
+      });
+    }
 
     this.draggedTask = null;
     this.draggedFromColumn = '';
   }
 
+  // ========== MODALES ==========
+  
   showMembersModal(): void {
     this.showMembersListModal = true;
   }

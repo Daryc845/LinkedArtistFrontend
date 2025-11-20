@@ -16,12 +16,13 @@ import {
   ProjectBasic,
   ProjectDetail
 } from '../models/responses/dashboard.responses';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
+  private apiUrl = environment.prodUrl;
 
   constructor(private http: HttpClient) { }
 

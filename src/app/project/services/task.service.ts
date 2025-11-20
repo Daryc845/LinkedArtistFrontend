@@ -12,19 +12,16 @@ import {
   TaskResponse,
   DeleteTaskResponse 
 } from '../models/responses/task.responses';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
+  private apiUrl = environment.prodUrl;
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Crear una nueva tarea
-   * Endpoint: POST /task/create
-   */
   createTask(request: CreateTaskRequest): Observable<TaskResponse> {
     const token = localStorage.getItem('access_token');
     
@@ -36,10 +33,6 @@ export class TaskService {
     return this.http.post<TaskResponse>(`${this.apiUrl}/task/create`, request, { headers });
   }
 
-  /**
-   * Actualizar una tarea existente
-   * Endpoint: PUT /task/update
-   */
   updateTask(request: UpdateTaskRequest): Observable<TaskResponse> {
     const token = localStorage.getItem('access_token');
     
@@ -52,10 +45,6 @@ export class TaskService {
     return this.http.put<TaskResponse>(`${this.apiUrl}/task/update`, request, { headers });
   }
 
-  /**
-   * Eliminar una tarea
-   * Endpoint: DELETE /task/delete
-   */
   deleteTask(taskId: number): Observable<DeleteTaskResponse> {
     const token = localStorage.getItem('access_token');
     

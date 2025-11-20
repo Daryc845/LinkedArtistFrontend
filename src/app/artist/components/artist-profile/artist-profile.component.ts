@@ -86,7 +86,9 @@ export class ArtistProfileComponent implements OnInit {
 
     this.artistProfileService.getArtistProfile(request).subscribe({
       next: (response) => {
+        
         if (response.success) {
+          console.log(response);
           // Transformar la respuesta del backend al formato local
           this.artist = {
             id: response.data.userid,

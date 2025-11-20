@@ -3,17 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoginRequest } from '../models/requests/login.requests';
 import { LoginResponse } from '../models/responses/login.responses';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com/auth/login';
+  private apiUrl = environment.prodUrl;
 
   constructor(private http: HttpClient) { }
 
   login(loginData: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, loginData);
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginData);
   }
 
   storeTokens(accessToken: string, refreshToken: string): void {

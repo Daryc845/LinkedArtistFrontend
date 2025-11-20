@@ -47,10 +47,11 @@ export class ManageProjectComponent implements OnInit {
   projectId: number = 0;
 
   availableSkills = [
-    { name: 'Dibujo', id: 1 , selected: false},
-    { name: 'Animacion', id: 2 , selected: false},
-    { name: 'Escultura', id: 3 , selected: false},
-    { name: 'Grabado', id: 4 , selected: false}
+    { name: 'Dibujo', id: 1, selected: false },
+    { name: 'Pintura', id: 2, selected: false },
+    { name: 'Animacion', id: 3, selected: false },
+    { name: 'Escultura', id: 4, selected: false },
+    { name: 'Grabado', id: 5, selected: false }
   ];
 
   availableCategories = [
@@ -171,7 +172,7 @@ export class ManageProjectComponent implements OnInit {
   loadMembers(projectId: number): void {
     this.manageProjectService.getMembers(projectId).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.code && response.code >= 200 && response.code < 300) {
           this.project.members = response.data.members.map(m => ({
             id: m.userid,
             name: `${m.name} ${m.lastname}`,
@@ -190,7 +191,9 @@ export class ManageProjectComponent implements OnInit {
   loadRequests(projectId: number): void {
     this.manageProjectService.getRequests(projectId).subscribe({
       next: (response) => {
-        if (response.success) {
+        
+        if (response.code && response.code >= 200 && response.code < 300) {
+          console.log(response);
           this.project.requests = response.data.requests.map(r => ({
             id: r.userid,
             name: `${r.name} ${r.lastname}`,
@@ -227,7 +230,7 @@ export class ManageProjectComponent implements OnInit {
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('El proyecto ha sido eliminado correctamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['error-snackbar']
+            panelClass: ['success-snackbar']
           });
           
           setTimeout(() => {
@@ -349,7 +352,13 @@ export class ManageProjectComponent implements OnInit {
   }
   
   showAddTaskModal(): void {
-    this.editingTask = null;
+    this.editingTask = {
+      id: 0, 
+      name: '',
+      assignee: undefined,
+      userEmail: undefined,
+      userNickname: undefined
+    };
     this.editingTaskColumn = '';
     this.taskForm = { name: '', assignee: '' };
     this.showTaskModal = true;
@@ -411,9 +420,9 @@ export class ManageProjectComponent implements OnInit {
 
     const request: CreateTaskRequest = {
       projectId: this.projectId,
-      name: this.taskForm.name,
+      name: this.editingTask!.name,
       state: 'to be done',
-      assignedUserEmail: this.taskForm.assignee
+      assignedUserEmail: this.editingTask?.userEmail!
     };
 
     this.taskService.createTask(request).subscribe({
@@ -470,7 +479,7 @@ export class ManageProjectComponent implements OnInit {
     const request: UpdateTaskRequest = {
       projectId: this.projectId,
       taskId: this.editingTask.id,
-      name: this.taskForm.name,
+      name: this.editingTask.name,
       state: stateMap[this.editingTaskColumn as keyof typeof stateMap] as any,
       assignedUserEmail: this.editingTask.userEmail!
     };
@@ -490,7 +499,7 @@ export class ManageProjectComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.snackBar.open('Error al actualizar la tarea', 'Cerrar', {
+        this.snackBar.open('Error al actualizar la tarea: El usuario asignado no es integrante del proyecto.', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
         });
@@ -583,10 +592,11 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.acceptRequest(acceptRequest).subscribe({
       next: (response) => {
+        console.log(response);
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open(`${request.name} ha sido aceptado en el proyecto`, 'Cerrar', {
             duration: 2500,
-            panelClass: ['error-snackbar']
+            panelClass: ['success-snackbar']
           });
 
           this.project.members.push({
@@ -618,10 +628,11 @@ export class ManageProjectComponent implements OnInit {
 
     this.manageProjectService.rejectRequest(rejectRequest).subscribe({
       next: (response) => {
+        console.log(response);
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open(`Solicitud de ${request.name} rechazada`, 'Cerrar', {
             duration: 2500,
-            panelClass: ['warning-snackbar']
+            panelClass: ['success-snackbar']
           });
 
           this.project.requests = this.project.requests.filter(r => r.id !== request.id);

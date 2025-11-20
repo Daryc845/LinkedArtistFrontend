@@ -5,20 +5,19 @@ import { CreateProjectRequest } from '../models/requests/create-project.requests
 import { CreateProjectResponse } from '../models/responses/create-project.responses';
 import { HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../../services/token.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
 
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
+  private apiUrl = environment.prodUrl;
 
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
   createProject(projectData: CreateProjectRequest): Observable<CreateProjectResponse> {
-    console.log('📤 Enviando solicitud de creación de proyecto:', projectData);
     const token = localStorage.getItem('access_token');
-    console.log('🔍 Token para project.create:', token);
     
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

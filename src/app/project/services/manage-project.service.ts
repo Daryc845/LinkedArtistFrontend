@@ -20,20 +20,16 @@ import {
   RequestsResponse,
 } from '../models/responses/manage-project.responses';
 import { CreateTaskRequest } from '../models/requests/task.requests';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ManageProjectService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = environment.prodUrl;
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Obtener información del proyecto
-   * Endpoint: GET /projects/{id}
-   * Se usa cuando se carga la página según el id de la URL /project/manage/{id}
-   */
   getProject(id: number): Observable<ProjectResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -43,13 +39,7 @@ export class ManageProjectService {
     return this.http.get<ProjectResponse>(`${this.apiUrl}/projects/${id}`, { headers } );
   }
 
-  /**
-   * Actualizar información del proyecto
-   * Endpoint: PUT /projects/update
-   * Se usa cuando se presiona "Guardar cambios" en el panel principal
-   */
   updateProject(request: UpdateProjectRequest): Observable<BaseResponse> {
-    console.log('📤 Enviando solicitud de actualización de proyecto:', request);
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -108,11 +98,6 @@ export class ManageProjectService {
     });
   }
 
-  /**
-   * Solicitar unirse a un proyecto
-   * Endpoint: POST /projects/join
-   * Se usa cuando un usuario quiere unirse a un proyecto
-   */
   joinProject(projectId: number, userId: number, message?: string): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -126,11 +111,6 @@ export class ManageProjectService {
     );
   }
 
-  /**
-   * Obtener miembros del proyecto
-   * Endpoint: GET /projects/{id}/members
-   * Se usa cuando se presiona "Ver integrantes"
-   */
   getMembers(projectId: number): Observable<MembersResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -140,22 +120,16 @@ export class ManageProjectService {
     return this.http.get<MembersResponse>(`${this.apiUrl}/projects/${projectId}/members`, { headers });
   }
 
-  /**
-   * Eliminar miembro del proyecto
-   * Endpoint: DELETE /projects/member
-   * Se usa cuando se presiona eliminar miembro en el panel de integrantes
-   */
   removeMember(request: RemoveMemberRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/member`, { body: request });
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/member`, {body: request, headers });
     
   }
 
-  /**
-   * Obtener solicitudes del proyecto
-   * Endpoint: GET /projects/{id}/requests
-   * Se usa cuando se presiona "Abrir centro de solicitudes"
-   */
   getRequests(projectId: number): Observable<RequestsResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -164,12 +138,7 @@ export class ManageProjectService {
     });
     return this.http.get<RequestsResponse>(`${this.apiUrl}/projects/${projectId}/requests`, { headers });
   }
-
-  /**
-   * Aceptar solicitud
-   * Endpoint: POST /projects/requests/accept
-   * Se usa cuando se presiona "Aceptar" en el centro de solicitudes
-   */
+  
   acceptRequest(request: AcceptRequestRequest): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -179,11 +148,6 @@ export class ManageProjectService {
     return this.http.post<BaseResponse>(`${this.apiUrl}/projects/requests/accept`, request, { headers });
   }
 
-  /**
-   * Rechazar solicitud
-   * Endpoint: POST /projects/requests/decline
-   * Se usa cuando se presiona "Rechazar" en el centro de solicitudes
-   */
   rejectRequest(request: RejectRequestRequest): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({

@@ -6,6 +6,6 @@ export interface UpdateUserRequest {
   cellphone: string;
   email: string;
   password?: string;
-  skills: { name: string }[];
+  skillIds: number[];
   biography: string;
 }

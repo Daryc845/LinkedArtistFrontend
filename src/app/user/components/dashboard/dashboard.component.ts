@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardService } from '../../services/dashboard.service';
 import { UpdateUserRequest } from '../../models/requests/dashboard.requests';
-import { User } from '../../models/dashboard.model';
+import { User, Skill } from '../../models/dashboard.model';
 import { TokenService } from '../../../services/token.service';
 
 @Component({
@@ -19,9 +19,7 @@ import { TokenService } from '../../../services/token.service';
 })
 export class UserDashboardComponent implements OnInit {
   showSkillsDropdown: boolean = false;
-
- 
-  userId: number  = 0; 
+  userId: number = 0;
 
   user: User = {
     id: 1,
@@ -31,24 +29,20 @@ export class UserDashboardComponent implements OnInit {
     phone: '',
     email: '',
     password: '',
-    skills: [],
+    skills: [], // Ahora será array de números (IDs)
     bio: ''
   };
 
-  availableSkills: string[] = [
-    'Ilustración',
-    'Diseño Gráfico',
-    'Diseño 3D',
-    'Edición de Fotos',
-    'Tipografía',
-    'Animación 2D',
-    'Animación 3D',
-    'Modelado 3D',
-    'Concept Art'
+  availableSkills: Skill[] = [
+    { name: 'Dibujo', id: 1, selected: false },
+    { name: 'Pintura', id: 2, selected: false },
+    { name: 'Animacion', id: 3, selected: false },
+    { name: 'Escultura', id: 4, selected: false },
+    { name: 'Grabado', id: 5, selected: false }
   ];
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private snackBar: MatSnackBar,
     private dashboardService: DashboardService,
     private tokenService: TokenService
@@ -62,7 +56,8 @@ export class UserDashboardComponent implements OnInit {
   loadUser(): void {
     this.dashboardService.getUser(this.userId).subscribe({
       next: (response) => {
-        if (response.code  && response.data) {
+        console.log(response);
+        if (response.code && response.data) {
           this.mapApiResponseToUser(response.data);
         } else {
           this.snackBar.open('Error al cargar los datos del usuario', 'Cerrar', {
@@ -82,38 +77,61 @@ export class UserDashboardComponent implements OnInit {
   }
 
   private mapApiResponseToUser(apiData: any): void {
-  this.user.name = apiData.name || '';
-  this.user.lastName = apiData.lastname || '';
-  this.user.alias = apiData.nickname || '';
-  this.user.phone = apiData.cellphone || '';
-  this.user.email = apiData.email || '';
-  this.user.password = ''; 
-  this.user.skills = apiData.skills ? apiData.skills.map((skill: any) => skill.name) : [];
-  this.user.bio = apiData.biography || '';
+    this.user.name = apiData.name || '';
+    this.user.lastName = apiData.lastname || '';
+    this.user.alias = apiData.nickname || '';
+    this.user.phone = apiData.cellphone || '';
+    this.user.email = apiData.email || '';
+    this.user.password = '';
+    this.user.bio = apiData.biography || '';
+    
+    if (apiData.skills && Array.isArray(apiData.skills)) {
+      this.user.skills = apiData.skills.map((skill: any) => skill.id || skill.skillId);
+      
+      // Actualizar el estado selected en availableSkills
+      this.availableSkills.forEach(skill => {
+        skill.selected = this.user.skills.includes(skill.id);
+      });
+    } else {
+      this.user.skills = [];
+    }
   }
 
   toggleSkillsDropdown(): void {
     this.showSkillsDropdown = !this.showSkillsDropdown;
   }
 
-  isSkillSelected(skill: string): boolean {
-    return this.user.skills.includes(skill);
+  isSkillSelected(skill: Skill): boolean {
+    return this.user.skills.includes(skill.id);
   }
 
-  toggleSkill(skill: string): void {
-    const index = this.user.skills.indexOf(skill);
+  toggleSkill(skill: Skill): void {
+    const index = this.user.skills.indexOf(skill.id);
     if (index > -1) {
       this.user.skills.splice(index, 1);
+      skill.selected = false;
     } else {
-      this.user.skills.push(skill);
+      this.user.skills.push(skill.id);
+      skill.selected = true;
     }
   }
 
-  removeSkill(skill: string): void {
-    const index = this.user.skills.indexOf(skill);
+  removeSkill(skillId: number): void {
+    const index = this.user.skills.indexOf(skillId);
     if (index > -1) {
       this.user.skills.splice(index, 1);
+      
+      // Actualizar el estado en availableSkills
+      const skill = this.availableSkills.find(s => s.id === skillId);
+      if (skill) {
+        skill.selected = false;
+      }
     }
+  }
+
+  getSkillName(skillId: number): string {
+    const skill = this.availableSkills.find(s => s.id === skillId);
+    return skill ? skill.name : `Skill ${skillId}`;
   }
 
   private validateForm(): boolean {
@@ -184,9 +202,11 @@ export class UserDashboardComponent implements OnInit {
         cellphone: this.user.phone,
         email: this.user.email,
         password: this.user.password || undefined,
-        skills: this.user.skills.map(skill => ({ name: skill })),
+        skillIds: this.user.skills,
         biography: this.user.bio
       };
+
+      console.log('📤 Enviando request:', updateRequest);
 
       this.dashboardService.updateUser(updateRequest).subscribe({
         next: (response) => {
@@ -221,10 +241,6 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  /**
-   * Eliminar cuenta de usuario
-   * Endpoint: DELETE /user/{id}/delete
-   */
   validateDelete(): void {
     const confirmDelete = confirm(
       "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción es irreversible."
@@ -253,7 +269,7 @@ export class UserDashboardComponent implements OnInit {
             this.router.navigate(['/auth/login']);
           }, 1000);
         } else {
-          this.snackBar.open(`Error: ` + `No puede eliminar la cuenta mientras tenga proyectos activos`, 'Cerrar', {
+          this.snackBar.open(`Error: No puede eliminar la cuenta mientras tenga proyectos activos`, 'Cerrar', {
             duration: 5000,
             panelClass: ['error-snackbar']
           });

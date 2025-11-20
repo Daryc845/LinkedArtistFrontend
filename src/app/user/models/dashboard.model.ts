@@ -6,6 +6,12 @@ export interface User {
   phone: string;
   email: string;
   password: string;
-  skills: string[];
+  skills: number[];
   bio: string;
+}
+
+export interface Skill {
+  id: number;
+  name: string;
+  selected?: boolean;
 }
