@@ -7,7 +7,6 @@ import { ManageProjectService } from '../../services/manage-project.service';
 import { Project, Member, Request, Task } from '../../models/manage-project.model';
 import { 
   UpdateProjectRequest, 
-  CreateTaskRequest, 
   UpdateTaskStateRequest, 
   UpdateTaskRequest,
   DeleteTaskRequest, 
@@ -15,7 +14,9 @@ import {
   AcceptRequestRequest, 
   RejectRequestRequest 
 } from '../../models/requests/manage-project.requests';
+import { CreateTaskRequest } from '../../models/requests/task.requests';
 import { HttpClientModule } from '@angular/common/http';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   standalone: true,
@@ -80,7 +81,8 @@ export class ManageProjectComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private manageProjectService: ManageProjectService
+    private manageProjectService: ManageProjectService,
+    private taskService: TaskService
   ) {}
 
   
@@ -415,12 +417,13 @@ export class ManageProjectComponent implements OnInit {
     }
 
     const request: CreateTaskRequest = {
-      projectid: this.projectId,
+      projectId: this.projectId,
       name: this.taskForm.name,
-      email: this.taskForm.assignee || undefined
+      state: 'to be done',
+      assignedUserEmail: this.taskForm.assignee
     };
 
-    this.manageProjectService.createTask(request).subscribe({
+    this.taskService.createTask(request).subscribe({
       next: (response) => {
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Tarea añadida exitosamente', 'Cerrar', {

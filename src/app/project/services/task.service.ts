@@ -33,7 +33,6 @@ export class TaskService {
       'Authorization': `Bearer ${token}`
     });
 
-    console.log('📤 Creando tarea:', request);
     return this.http.post<TaskResponse>(`${this.apiUrl}/task/create`, request, { headers });
   }
 

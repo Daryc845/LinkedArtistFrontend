@@ -13,16 +13,6 @@ export interface UpdateProjectRequest {
   skills: Array<{ skillId: number }>;
 }
 
-/**
- * Request para crear una nueva tarea
- * Endpoint: POST /projects/tasks/create
- * Se usa cuando se presiona "Añadir tarea"
- */
-export interface CreateTaskRequest {
-  projectid: number;
-  name: string;
-  email?: string; // Opcional, email del encargado
-}
 
 /**
  * Request para actualizar el estado de una tarea (drag & drop)
