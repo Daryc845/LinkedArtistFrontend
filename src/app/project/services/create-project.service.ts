@@ -11,7 +11,7 @@ import { TokenService } from '../../services/token.service';
 })
 export class ProjectService {
 
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
 
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 

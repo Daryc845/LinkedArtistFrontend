@@ -8,7 +8,7 @@ import { RegisterResponse } from '../models/responses/register.responses';
   providedIn: 'root'
 })
 export class RegisterService {
-  private apiUrl = 'http://localhost:8080/auth/register';
+  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com/auth/register';
 
   constructor(private http: HttpClient) { }
 

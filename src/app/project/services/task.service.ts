@@ -17,7 +17,7 @@ import {
   providedIn: 'root'
 })
 export class TaskService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
 
   constructor(private http: HttpClient) { }
 

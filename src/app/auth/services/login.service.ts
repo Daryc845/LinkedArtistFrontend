@@ -8,7 +8,7 @@ import { LoginResponse } from '../models/responses/login.responses';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'http://localhost:8080/auth/login';
+  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com/auth/login';
 
   constructor(private http: HttpClient) { }
 

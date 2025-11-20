@@ -8,7 +8,7 @@ import { ProjectResponse, MembersResponse, BaseResponse } from '../models/respon
   providedIn: 'root'
 })
 export class WorkProjectService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
 
   constructor(private http: HttpClient) { }
 
