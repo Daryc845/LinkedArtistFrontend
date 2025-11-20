@@ -16,6 +16,7 @@ export interface CreateTaskRequest {
  * Endpoint: PUT /task/update
  */
 export interface UpdateTaskRequest {
+  projectId: number;
   taskId: number;
   name: string;
   state: 'to be done' | 'in progress' | 'under review' | 'done';

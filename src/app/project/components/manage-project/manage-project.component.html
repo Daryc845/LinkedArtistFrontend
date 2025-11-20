@@ -262,11 +262,11 @@
             type="email" 
             id="taskAssignee"
             name="taskAssignee"
-            [(ngModel)]="taskForm.assignee"
+            [(ngModel)]="editingTask!.userEmail"
             placeholder="correo@ejemplo.com"
           >
           <small class="current-assignee" *ngIf="editingTask && editingTask.userEmail">
-            <i class="fa-solid fa-info-circle"></i> Asignado actualmente a: <strong>{{editingTask.userEmail}}</strong>
+            <i class="fa-solid fa-info-circle"></i> Asignado actualmente a: <strong>{{editingTask.assignee}}</strong>
           </small>
         </div>
 

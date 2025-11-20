@@ -7,12 +7,12 @@ import { Observable } from 'rxjs';
 import { 
   UpdateProjectRequest, 
   UpdateTaskStateRequest, 
-  UpdateTaskRequest,
   DeleteTaskRequest, 
   RemoveMemberRequest, 
   AcceptRequestRequest, 
   RejectRequestRequest 
 } from '../models/requests/manage-project.requests';
+import { UpdateTaskRequest } from '../models/requests/task.requests';
 import { 
   BaseResponse, 
   ProjectResponse, 
@@ -25,7 +25,7 @@ import { CreateTaskRequest } from '../models/requests/task.requests';
   providedIn: 'root'
 })
 export class ManageProjectService {
-  private apiUrl = 'https://partyst-java-backend-mnjv.onrender.com';
+  private apiUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 
@@ -40,7 +40,6 @@ export class ManageProjectService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
-    // BACKEND: Descomentar cuando esté listo el backend
     return this.http.get<ProjectResponse>(`${this.apiUrl}/projects/${id}`, { headers } );
   }
 
@@ -60,11 +59,6 @@ export class ManageProjectService {
     
   }
 
-  /**
-   * Eliminar proyecto
-   * Endpoint: DELETE /projects/{id}/delete
-   * Se usa cuando se presiona "Eliminar proyecto"
-   */
   deleteProject(id: number): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -74,11 +68,6 @@ export class ManageProjectService {
     return this.http.delete<BaseResponse>(`${this.apiUrl}/projects/${id}/delete`, { headers });
   }
 
-  /**
-   * Crear nueva tarea
-   * Endpoint: POST /projects/tasks/create
-   * Se usa cuando se presiona "Añadir tarea"
-   */
   createTask(request: CreateTaskRequest): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -89,11 +78,6 @@ export class ManageProjectService {
     
   }
 
-  /**
-   * Actualizar estado de tarea (drag & drop)
-   * Endpoint: PUT /task/state
-   * Se usa cuando se arrastra una tarea de un estado a otro
-   */
   updateTaskState(request: UpdateTaskStateRequest): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -103,21 +87,15 @@ export class ManageProjectService {
     return this.http.put<BaseResponse>(`${this.apiUrl}/task/state`, request, { headers });
   }
 
-  /**
-   * Actualizar tarea completa
-   * Endpoint: PUT /projects/tasks/update
-   * Se usa cuando se presiona "Guardar cambios" en el modal de editar tarea
-   */
   updateTask(request: UpdateTaskRequest): Observable<BaseResponse> {
-    // BACKEND: Descomentar cuando esté listo el backend
-    return this.http.put<BaseResponse>(`${this.apiUrl}/projects/tasks/update`, request);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<BaseResponse>(`${this.apiUrl}/task/update`, request, {headers});
   }
 
-  /**
-   * Eliminar tarea
-   * Endpoint: DELETE /task/delete
-   * Se usa cuando se presiona "Eliminar" en el modal de editar tarea
-   */
   deleteTask(request: DeleteTaskRequest): Observable<BaseResponse> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({

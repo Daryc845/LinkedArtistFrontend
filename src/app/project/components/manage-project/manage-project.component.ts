@@ -8,12 +8,12 @@ import { Project, Member, Request, Task } from '../../models/manage-project.mode
 import { 
   UpdateProjectRequest, 
   UpdateTaskStateRequest, 
-  UpdateTaskRequest,
   DeleteTaskRequest, 
   RemoveMemberRequest, 
   AcceptRequestRequest, 
   RejectRequestRequest 
 } from '../../models/requests/manage-project.requests';
+import { UpdateTaskRequest } from '../../models/requests/task.requests';
 import { CreateTaskRequest } from '../../models/requests/task.requests';
 import { HttpClientModule } from '@angular/common/http';
 import { TaskService } from '../../services/task.service';
@@ -127,9 +127,6 @@ export class ManageProjectComponent implements OnInit {
     });
   }
 
-  /**
-   * Organizar tareas del backend en columnas
-   */
   organizeTasks(tasks: any[]): void {
     this.project.tasks = {
       todo: [],
@@ -139,25 +136,20 @@ export class ManageProjectComponent implements OnInit {
     };
 
     tasks.forEach(task => {
-      console.log('📝 Procesando tarea del backend:', task);
-      
       const localTask: Task = {
-        id: task.taskId,  // ✅ Usar el ID real del backend
+        id: task.taskId,
         name: task.name,
         assignee: undefined,
         userEmail: undefined,
         userNickname: undefined
       };
 
-      // El backend envía userEmail, userName, userLastname
       if (task.userEmail && task.userEmail !== 'Sin email') {
         localTask.assignee = `${task.userName || ''} ${task.userLastname || ''}`.trim();
         localTask.userEmail = task.userEmail;
-        // Si el backend envía nickname, usarlo; si no, usar el nombre
         localTask.userNickname = task.userName || 'Sin alias';
       }
 
-      console.log('✅ Tarea procesada:', localTask);
 
       switch (task.state) {
         case 'to be done':
@@ -405,9 +397,10 @@ export class ManageProjectComponent implements OnInit {
       return;
     }
 
-    if (this.taskForm.assignee) {
+    if (this.editingTask?.userEmail) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(this.taskForm.assignee)) {
+      console.log(this.editingTask.userEmail)
+      if (!emailRegex.test(this.editingTask.userEmail)) {
         this.snackBar.open('Por favor ingresa un email válido', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
@@ -454,9 +447,9 @@ export class ManageProjectComponent implements OnInit {
       return;
     }
 
-    if (this.taskForm.assignee) {
+    if (this.editingTask?.userEmail) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(this.taskForm.assignee)) {
+      if (!emailRegex.test(this.editingTask.userEmail)) {
         this.snackBar.open('Por favor ingresa un email válido', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
@@ -475,11 +468,11 @@ export class ManageProjectComponent implements OnInit {
     };
 
     const request: UpdateTaskRequest = {
-      projectid: this.projectId,
-      taskid: this.editingTask.id,
+      projectId: this.projectId,
+      taskId: this.editingTask.id,
       name: this.taskForm.name,
       state: stateMap[this.editingTaskColumn as keyof typeof stateMap] as any,
-      email: this.taskForm.assignee || undefined
+      assignedUserEmail: this.editingTask.userEmail!
     };
 
     this.manageProjectService.updateTask(request).subscribe({
