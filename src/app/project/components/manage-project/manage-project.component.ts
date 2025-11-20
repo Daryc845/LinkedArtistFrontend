@@ -235,7 +235,7 @@ export class ManageProjectComponent implements OnInit {
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('El proyecto ha sido eliminado correctamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+            panelClass: ['error-snackbar']
           });
           
           setTimeout(() => {
@@ -428,7 +428,7 @@ export class ManageProjectComponent implements OnInit {
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open('Tarea añadida exitosamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+            panelClass: ['success-snackbar']
           });
           
           this.loadProject(this.projectId);
@@ -490,7 +490,7 @@ export class ManageProjectComponent implements OnInit {
 
           this.snackBar.open('Tarea actualizada exitosamente', 'Cerrar', {
             duration: 3000,
-            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+            panelClass: ['success-snackbar']
           });
 
           this.closeTaskModal();
@@ -567,7 +567,7 @@ export class ManageProjectComponent implements OnInit {
             
             this.snackBar.open('Integrante eliminado exitosamente', 'Cerrar', {
               duration: 3000,
-              panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+              panelClass: ['success-snackbar']
             });
           }
         },
@@ -593,7 +593,7 @@ export class ManageProjectComponent implements OnInit {
         if (response.code && response.code >= 200 && response.code < 300) {
           this.snackBar.open(`${request.name} ha sido aceptado en el proyecto`, 'Cerrar', {
             duration: 2500,
-            panelClass: ['code && response.code >= 200 && response.code < 300-snackbar']
+            panelClass: ['error-snackbar']
           });
 
           this.project.members.push({
