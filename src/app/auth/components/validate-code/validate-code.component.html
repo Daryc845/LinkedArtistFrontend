@@ -1,0 +1,43 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="logo-section">
+      <div class="logo-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <h1>Validar Código</h1>
+      <p class="subtitle">
+        Ingresa el código de 6 dígitos enviado a<br>
+        <strong>{{ email }}</strong>
+      </p>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="validateCode()" #form="ngForm">
+      <div class="form-group">
+        <label for="code">Código de Verificación</label>
+        <input 
+          [(ngModel)]="code"
+          type="text" 
+          id="code" 
+          name="code" 
+          placeholder="123456"
+          maxlength="6"
+          required
+          [disabled]="isLoading"
+        >
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-primary"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">Validar Código</span>
+        <span *ngIf="isLoading">
+          <i class="fa-solid fa-spinner fa-spin"></i> Validando...
+        </span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p><a (click)="goBack()" [class.disabled]="isLoading">← Volver atrás</a></p>
+    </div>
+  </div>
+</div>

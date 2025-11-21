@@ -267,6 +267,69 @@ body {
   color: var(--blue-primary);
 }
 
+.success-message {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.fa-spinner {
+  margin-right: 8px;
+}
+
+.password-strength {
+  margin-top: 0.5rem;
+}
+
+.strength-bar {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.strength-level {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.strength-level.weak {
+  width: 33%;
+  background: #f44336;
+}
+
+.strength-level.medium {
+  width: 66%;
+  background: #ff9800;
+}
+
+.strength-level.strong {
+  width: 100%;
+  background: #4caf50;
+}
+
+.strength-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.strength-text.weak {
+  color: #f44336;
+}
+
+.strength-text.medium {
+  color: #ff9800;
+}
+
+.strength-text.strong {
+  color: #4caf50;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .auth-card {
