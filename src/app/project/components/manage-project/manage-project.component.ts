@@ -398,7 +398,7 @@ export class ManageProjectComponent implements OnInit {
   }
   
   validateAddTask(): void {
-    if (!this.taskForm.name.trim()) {
+    if (!this.editingTask?.name.trim()) {
       this.snackBar.open('Por favor ingresa el nombre de la tarea', 'Cerrar', {
         duration: 3000,
         panelClass: ['warning-snackbar']
